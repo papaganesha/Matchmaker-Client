@@ -25,7 +25,7 @@ const ImageSlider = (props) => {
     userInfo.mainPicture,
     ...userInfo.pictures
   ];
-  
+
   return <FlatListSlider
     style={tw`flex w-full h-full justify-center`}
     animated={false}
@@ -36,7 +36,7 @@ const ImageSlider = (props) => {
 
 
 const Profile = () => {
-  const { userInfo, userToken, logout } = useContext(AuthContext)
+  const { userInfo, userToken, logout, refreshUserInfo } = useContext(AuthContext)
   const [userAge, setUserAge] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -60,7 +60,7 @@ const Profile = () => {
   const RenderPictures = () => {
     if (userInfo.mainPicture) {
       const mainPicture = userInfo.mainPicture
-      return (<Image style={tw`flex w-10/12 h-10/12 `} source={{ uri: mainPicture }} />)
+      return (<Image style={tw`flex w-full h-full rounded`} source={{ uri: mainPicture }} />)
     }
   }
 
@@ -92,21 +92,18 @@ const Profile = () => {
   const RenderCity = () => {
     return (
       <View style={tw`mt-4`}>
-        <Text style={tw`mt-2 ml-8 text-lg font-bold`}>Cidade</Text>
-        <Text style={tw`mt-2 ml-8  font-semibold`}>{userInfo.city}</Text>
+        <Text style={tw`mt-2 ml-8 text-base font-bold`}>Cidade</Text>
+        <Text style={tw`mt-2 ml-8  font-medium`}>{userInfo.city}, Brasil</Text>
       </View>
     )
   }
 
   const RenderSummary = ({ summary }) => {
     return (
-      <View style={tw`flex w-11/12 h-10/12`}>
-        <Text style={tw`mt-3 ml-8 text-lg font-bold`}>Sobre</Text>
-        <View style={tw`mt-3 ml-8 font-bold border rounded`}>
-          <Text style={tw`mt-3 ml-2 font-bold `}>{summary}</Text>
-          <Text style={tw`mt-3 ml-2 font-bold `}></Text>
-          <Text style={tw`mt-3 ml-2 font-bold `}></Text>
-          <Text style={tw`mt-3 ml-2 font-bold `}></Text>
+      <View style={tw`flex w-full h-48 border`}>
+        <Text style={tw`mt-3 ml-8 text-base font-bold`}>Sobre</Text>
+        <View style={tw` ml-8 rounded`}>
+          <Text style={tw`mt-2 font-medium`}>{summary}</Text>
         </View>
       </View>
     )
@@ -114,11 +111,21 @@ const Profile = () => {
 
   const RenderInterests = ({ interests }) => {
     return (
-      <View style={tw`flex w-11/12 h-10/12`}>
+      <View style={tw`flex w-full h-auto`}>
         <Text style={tw`mt-3 ml-8 text-lg font-bold`}>Interesses</Text>
-        <View style={tw`mt-3 ml-8 font-bold border rounded`}>
-          <Text style={tw`mt-3 ml-2 font-bold `}>{interests[0].interestName}</Text>
-          <Text style={tw`mt-3 ml-2 font-bold `}>{interests[1].interestName}</Text>
+        <View style={tw`flex flex-row flex-wrap font-bold border rounded justify-center`}>
+          {interests.map(interest => {
+            return (
+              <View>
+                <View style={tw`flex justify-center items-center ml-3 mr-3 `}>
+                  <Icon name={interest.iconName} style={tw``} size={20} color="black" />
+                </View>
+                <View style={tw`flex border justify-center items-center h-10 p-2 w-28`}>
+                  <Text style={tw`font-bold`}>{interest.interestName}</Text>
+                </View>
+              </View>
+            )
+          })}
         </View>
       </View>
     )
@@ -126,42 +133,50 @@ const Profile = () => {
 
   useEffect(() => {
     getUserAge()
+    refreshUserInfo()
   }, [])
 
   return (
-    <View style={tw`flex-1 items-end w-full pt-8`}>
-      <View
-        style={tw`flex w-10 h-10 border justify-center items-center rounded-2xl mt-5 mr-5 `}
-        onStartShouldSetResponder={() => {
-          logout()
-        }}
-      >
-        <Text style={tw`text-white text-base justify-center items-center`}>
-          <Icon name="sign-out" style={tw``} size={15} color="black" />
-        </Text>
-
-      </View>
-
-      <View style={tw`flex items-center w-full h-2/4 justify-center  `}>
-        <View style={tw`flex w-full justify-start items-center border`}>
+    <View style={tw`flex-1 items-end w-full`}>
+      <ScrollView style={tw`w-full`}>
+        <View style={tw`flex items-center w-full h-1/4 justify-center`}>
           <RenderPictures />
         </View>
-      </View>
-      
-      <View style={tw`flex items-start w-full  `}>
-        <Text style={tw` ml-8 text-2xl font-semibold`}>{userInfo.fName} {userInfo.sName}, {loading ? (<ActivityIndicator size={20} color="#FF0D" />) : (userAge)}</Text>
-        <RenderGenderAndOrientation userInfo={userInfo} />
-        <RenderCity city={userInfo.city} />
-        <Text style={tw`mt-3 ml-8  font-semibold`}></Text>
-      </View>
-      
-      <View style={tw`flex w-full border`}>
-        <RenderInterests interests={userInfo.interests} />
-      </View>
 
-      <View style={tw`flex w-full  border`}>
-        <RenderSummary summary={userInfo.summary} />
-      </View>
+        <View style={tw`flex items-start w-full rounded`}>
+          <Text style={tw` ml-8 text-2xl font-semibold pt-8`}>{userInfo.fName} {userInfo.sName}, {loading ? (<ActivityIndicator size={20} color="#FF0D" />) : (userAge)}</Text>
+          <RenderGenderAndOrientation userInfo={userInfo} />
+          <RenderCity city={userInfo.city} />
+          <Text style={tw`mt-3 ml-8 font-semibold`}></Text>
+
+
+          <View style={tw`flex w-full`}>
+            <RenderSummary summary={userInfo.summary} />
+          </View>
+
+
+          <View style={tw`flex w-full`}>
+            <RenderInterests interests={userInfo.interests} />
+          </View>
+
+
+          <View>
+            <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris nec pellentesque eros, at volutpat massa. Ut feugiat maximus nulla, sed tempor ipsum tempor tristique. Nunc pulvinar sapien vel arcu fringilla, id vestibulum tellus tincidunt. Curabitur in condimentum quam. Donec at aliquam tortor. Quisque iaculis finibus velit, ut tincidunt ante aliquam vehicula. Curabitur mauris erat, luctus vitae maximus vel, ullamcorper id velit. Integer faucibus, erat at posuere aliquet, erat eros elementum odio, et venenatis turpis mauris id massa. Maecenas efficitur orci lacinia, sagittis nulla et, aliquam felis. Sed pharetra ipsum in nulla viverra finibus. Nunc ex odio, ultricies eu accumsan id, pretium ut enim. Integer viverra ut quam eget varius. In erat sem, vehicula vel neque sed, ultrices rhoncus velit. </Text>
+          </View>
+
+          <View
+            style={tw`flex w-20 h-10 border justify-start items-left rounded-2xl mr-5`}
+            onStartShouldSetResponder={() => {
+              logout()
+            }}
+          >
+            <Text style={tw`text-white text-base justify-center items-center bg-red-500`}>
+              <Icon name="sign-out" style={tw``} size={15} color="black" />
+            </Text>
+          </View>
+
+        </View>
+      </ScrollView>
     </View>
   )
 }
