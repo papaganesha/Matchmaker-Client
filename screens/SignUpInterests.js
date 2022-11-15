@@ -31,7 +31,7 @@ const interestsList = [
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity onPress={onPress} style={[tw`flex flex-row w-35 h-10 p-1 my-1 mx-2 border justify-center items-center rounded-lg bg-red-500`, backgroundColor]}>
     <View style={tw`flex justify-center items-center ml-3 mr-3 `}>
-      <Icon name={item.iconName} style={tw``} size={20} color={textColor} />
+      <Icon name={item.iconName} style={[textColor, tw``]} size={20} color={textColor} />
     </View>
     <View style={tw`flex justify-center items-center`}>
       <Text style={[textColor, tw`text-base w-20 `]}>{item.interestName}</Text>
@@ -42,10 +42,9 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 
 const SignUpInterests = () => {
   const navigation = useNavigation()
-  const { userInfo, userToken, refreshUserInfo } = useContext(AuthContext)
+  const { userInfo, userToken, refreshUserInfo, error, setError } = useContext(AuthContext)
   const [selecteds, setSelecteds] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("")
 
   // ADICIONA E REMOVE ID DOS INTERESSES
   // 
@@ -78,7 +77,7 @@ const SignUpInterests = () => {
     console.log("upload", toUpload)
 
     if (toUpload.length < 3) {
-      setErrorMessage("Escolha no minimo 3 interesses")
+      setError("Escolha no minimo 3 interesses")
     } else {
       axios.post(`${BASE_URL}interests`, {
         interestsArray: toUpload
@@ -105,15 +104,15 @@ const SignUpInterests = () => {
               }
             })
             .catch(err => {
-              console.log("UPDATE USER FIRSTLOGIN SET ERROR: ", JSON.stringify(err.response.data.data))
-              setErrorMessage(JSON.stringify(err.response.data.data))
+              //console.log("UPDATE USER FIRSTLOGIN SET ERROR: ", JSON.stringify(err.response.data.error))
+              setError(JSON.stringify(err.response.data.error))
             })
 
         }
       })
         .catch(err => {
           console.log("UPDATE USER INTERESTS ERROR: ", JSON.stringify(err))
-          setErrorMessage(JSON.stringify(err.response.data.data))
+          setError(JSON.stringify(err.response.data.error))
         })
     }
     setLoading(false)
@@ -122,16 +121,20 @@ const SignUpInterests = () => {
 
   useEffect(() => { }, [selecteds])
 
+  useEffect(() => {
+    setError("")
+  }, [])
+
   return (
     <View style={tw`flex-1 h-full w-full`}>
       <View style={tw`flex h-1/4 justify-center pt-4`}>
         <Text style={tw`font-bold text-3xl mt-20 ml-10`}>Seus interesses</Text>
         <Text style={tw`font-bold text-sm text-center mt-4 mx-5`} >Selecione alguns de seus interesses e deixe todo mundo saber pelo que você é apaixonado.</Text>
       </View>
-      {!!errorMessage && (<View style={tw`flex w-full h-10  items-center justify-center mt-4`}><Text style={tw`flex w-85 text-center text-base font-semibold bg-gray-500 rounded p-1`}>{errorMessage}</Text></View>)}
+      
+      {!!error && <Text style={tw`flex w-85 mt-8 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text>}
+
       <View style={tw`flex flex-row w-full h-3/6 flex-wrap justify-center  mt-8 mb-6`}>
-
-
         {interestsList.map(item => {
           //SETA A COR DE FUNDO E DA LETRA DE ACORDO COM O ESTADO, VERIFICA SE ITEM.ID ESTA NOS SELECIONADOS OU NAO
           const backgroundColor = selecteds.indexOf(item.id) !== -1 ? "red" : "white";

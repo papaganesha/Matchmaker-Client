@@ -1,4 +1,4 @@
-import React, { Component, useState, useContext } from 'react';
+import React, { Component, useState, useContext, useEffect } from 'react';
 import { Image, TextInput, Text, View, StyleSheet, TouchableHighlight, ActivityIndicator } from 'react-native';
 import axios from 'axios'
 import tw from 'twrnc';
@@ -14,9 +14,9 @@ const TextField = ({ label, ...inputProps }) => {
   const [focused, setFocused] = useState(false);
 
   return (
-    <View style={tw`w-full items-center mt-4`}>
-      <Text style={tw`w-full pl-1 font-semibold text-base`}>{label}</Text>
-      <TextInput style={tw`px-2 border w-full py-2 rounded bg-white `}
+    <View style={tw`w-full justify-center items-center mt-4`}>
+      <Text style={tw`w-full pl-4 font-semibold text-base`}>{label}</Text>
+      <TextInput style={tw`my-1 mb-2 border w-11/12 py-2 rounded bg-white px-2`}
         {...inputProps}
         onFocus={(e) => setFocused(true)}
         onBlur={(e) => setFocused(false)}
@@ -57,11 +57,9 @@ const SignUpNameAndCity = ({ navigation }) => {
           'Authorization': `${userToken}`
         }
       }).then(res => {
-        console.log("SUCCESS >", res.data)
         if (res.data.success) {
           navigation.navigate("SignUpGender")
         }
-        //
       })
         .catch(err => {
           console.log("UPDATE USER PROFILE ERROR: ", err.response.data.error)
@@ -76,16 +74,19 @@ const SignUpNameAndCity = ({ navigation }) => {
     setLoading(false)
   }
 
- 
+  useEffect(() => {
+    setError("")
+  }, [])
+
   return (
     <View style={tw`flex-1 w-full bg-white`}>
       <View style={tw`flex w-full h-35 justify-end `}>
-        <Text style={tw`text-3xl font-bold ml-8`}>Detalhes do Perfil</Text>
+        <Text style={tw`text-3xl font-bold ml-7`}>Detalhes do Perfil</Text>
       </View>
 
-        {!!error && <Text style={tw`flex w-85 mt-10 text-center text-base font-semibold bg-gray-500 rounded p-1 self-center`}>{error}</Text>}
+      {!!error && <Text style={tw`flex w-85 mt-8 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text>}
 
-      <View style={tw`flex w-full h-50 mt-6 px-6`}>
+      <View style={tw`flex w-full h-50 mt-6 px-3`}>
         <TextField
           value={fName}
           label={'Nome'}
@@ -102,12 +103,11 @@ const SignUpNameAndCity = ({ navigation }) => {
         />
       </View>
 
-      <View style={tw`flex w-full h-auto px-6 justify-center`}>
+      <View style={tw`flex w-11/12 h-auto px-3 justify-center self-center mt-4 mb-2`}>
         <SelectDropdown
-          buttonStyle={tw`flex w-full border rounded-lg`}
+          buttonStyle={tw`flex w-full border rounded-lg `}
           defaultButtonText="Selecione sua cidade"
-          search={true}
-          searchPlaceHolder="Pesquise sua cidade"
+
           data={capitals}
           onSelect={(selectedItem, index) => {
             console.log(selectedItem, index)
@@ -126,7 +126,7 @@ const SignUpNameAndCity = ({ navigation }) => {
         />
       </View>
 
-      <View style={tw`flex w-full h-30 px-6 `}>
+      <View style={tw`flex w-full h-30 px-3 `}>
       <TextField
       multiline={true}
       value={summary}
@@ -138,7 +138,7 @@ const SignUpNameAndCity = ({ navigation }) => {
       </View>
 
       <View
-      style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-12 self-center`}
+      style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-10 self-center`}
       onStartShouldSetResponder={() => {
           updateProfileDetails()
         }}

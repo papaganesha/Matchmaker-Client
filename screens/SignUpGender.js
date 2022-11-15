@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Text, View, StyleSheet, TouchableHighlight, ActivityIndicator } from 'react-native';
 import RadioButton from '../components/RadioButton';
 import axios from 'axios'
@@ -11,10 +11,9 @@ import { BASE_URL } from '../config';
 
 export default SignUpGender = () => {
   const navigation = useNavigation()
-  const { userToken, userInfo } = useContext(AuthContext)
+  const { userToken, userInfo, error, setError } = useContext(AuthContext)
   const [option, setOption] = useState(null);
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(false)
 
 
   const data = [
@@ -51,15 +50,14 @@ export default SignUpGender = () => {
           'Authorization': `${userToken}`
         }
       }).then(res => {
-        console.log("SUCCESS >",res.data)
         if(res.data.success){
           navigation.navigate("SignUpOrientation")
         }
         //
       })
         .catch(err => {
-          console.log("UPDATE USER GENDER ERROR: ", JSON.stringify(err.response.data.data))
-          setError(err.response.data.data)
+          //console.log("UPDATE USER GENDER ERROR: ", JSON.stringify(err.response.data.error))
+          setError(err.response.data.error)
         })
     }else{
       setError("Escolha um genero")
@@ -68,23 +66,24 @@ export default SignUpGender = () => {
 
   }
 
-
+  useEffect(() => {
+    setError("")
+  }, [])
 
   return (
-    <View style={tw`flex-1 w-full bg-white`}>
+    <View style={tw`flex-1 w-full bg-white items-center`}>
     <View style={tw`flex w-full h-38 items-start justify-end px-4`}>
-    <Text style={tw`text-3xl font-bold ml-4`}>Seu gênero</Text>
+    <Text style={tw`text-3xl font-bold ml-3`}>Seu gênero</Text>
       </View>
 
-      {!!error && <Text style={tw`flex w-85 mt-10 text-center text-base text-white font-semibold bg-gray-500 rounded p-1 self-center`}>{error}</Text>}
+      {!!error && <Text style={tw`flex w-86 mt-8 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text>}
 
-      <View style={tw`flex w-full h-3/6 justify-start pt-10`}>
+      <View style={tw`flex w-full h-3/6 justify-center `}>
         <RadioButton key={data.key} data={data} onSelect={(value) => setOption(value)} />
       </View>
 
-    
 
-        <View
+      <View
         style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl self-center`}
         onStartShouldSetResponder={() => {
             updateGender()

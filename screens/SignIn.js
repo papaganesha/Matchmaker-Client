@@ -29,23 +29,25 @@ const TextField = ({ label, ...inputProps }) => {
 
 const SignIn = () => {
   const navigation = useNavigation()
-  const { login, error, isLoading, userInfo, userToken, logout } = useContext(AuthContext)
+  const { login, error, isLoading, userInfo, userToken, logout, setError } = useContext(AuthContext)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
 
+  useEffect(()=>{
+    setError("")
+  },[])
 
   if (!userToken) {
     return (
       <View
         style={tw`flex-1 w-full h-full bg-white`}
       >
-        <View style={tw`flex w-full h-2/6 items-center justify-center pt-10 `}>
-          <Image style={tw`w-3/6 h-3/6`} source={require('../assets/logo.png')} />
+        <View style={tw`flex w-full h-4/12 items-center justify-center pt-5 `}>
+          <Image style={tw`w-3/6 h-4/6`} source={require('../assets/logo.png')} />
         </View>
         <View style={tw`flex w-full h-full items-center bg-gray-200 rounded-3xl`}>
-          <Text style={tw`pt-4 text-3xl font-bold text-black text-center mt-8 mb-5`}>Entrar</Text>
-          {!!error && <Text style={tw`flex w-85 my-4 text-center text-base font-semibold bg-gray-500 rounded p-1`}>{error}</Text>}
+          <Text style={tw`pt-4 text-3xl font-bold text-black text-center mt-6 mb-2`}>Entrar</Text>
+          {!!error && <Text style={tw`flex w-82 mt-4 mb-3 text-center text-base font-semibold border rounded p-1`}>{error}</Text>}
           <TextField
             label={'Email'}
             value={email}
@@ -69,7 +71,7 @@ const SignIn = () => {
 
           {/*DIV/COM FUNÇÃO DE BOTÃO/REALIZAR LOGIN*/}
           <View
-            style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-10`}
+            style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-12`}
             onStartShouldSetResponder={() => {
               login(email, password)
             }}

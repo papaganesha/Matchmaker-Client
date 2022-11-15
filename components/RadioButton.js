@@ -15,10 +15,10 @@ export default function RadioButton({ data, onSelect }) {
     <View style={tw`w-full items-center px-2`}>
       {data.map((item) => {
         return (
-          <TouchableHighlight
-            style={item.value === userOption ? tw`mb-4 border rounded bg-red-600 ` : tw`mb-4 border rounded` }
+          <TouchableHighlight 
+            style={item.value === userOption ? tw`mb-6 border rounded bg-red-600 ` : tw`mb-6 border rounded` }
             onPress={() => selectHandler(item.value)}>
-           <View style={tw`flex-row w-11/12 p-3`}>
+           <View style={tw`flex-row w-11/12 p-3`}  key={item.key}>
                 <View style={tw`w-4/6 items-start`}>
                     <Text style={item.value === userOption ? tw`text-white text-lg` : tw`text-black text-lg` }> {item.value}</Text>
                 </View>

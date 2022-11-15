@@ -36,8 +36,10 @@ export const AuthProvider = ({ children }) => {
           //console.log("USER INFO: ", JSON.stringify(res.data.user))
         })
         .catch(err => {
-          console.log(`Login erro ${err.response.data.error}`)
+          //console.log(`Login erro ${err.response.data.error}`)
           setError(err.response.data.error)
+          console.log("LOGIN ERROR ",error)
+
         })
     } else {
       setError("Todos campos devem ser preenchidos")
@@ -73,13 +75,14 @@ export const AuthProvider = ({ children }) => {
           })
             .then(res => {
               if (res.data.message) { setError(res.data.message) }
-              console.log(res.success, res.data)
+              //console.log(res.success, res.data)
               login(email, password)
               //console.log("USER TOKEN: ",res.data.token)
               //console.log("USER INFO: ", JSON.stringify(res.data.user))
             })
             .catch(err => {
               //console.log(`Login erro ${err.response.data.error}`)
+              console.log("REGISTER ERROR ",error)
               setError(err.response.data.error)
             })
 
@@ -118,12 +121,11 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(false)
     } catch (e) {
       console.log(`isLoggedIn error ${e}`)
+      setError(e)
     }
   }
 
   const refreshUserInfo = async () => {
-    setIsLoading(true)
-
     axios.get(`${BASE_URL}user`, {
       headers: {
         'Authorization': `${userToken}`
@@ -136,9 +138,9 @@ export const AuthProvider = ({ children }) => {
         }
       })
       .catch(err => {
+        console.log("REFRES ERROR ",error)
         setError(err.response.data.error)
       })
-    setIsLoading(false)
 
   }
 
@@ -147,7 +149,7 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ login, logout, isLoggedIn, isLoading, userToken, userInfo, error, register, refreshUserInfo }}>
+    <AuthContext.Provider value={{ login, logout, isLoggedIn, isLoading,setIsLoading, userToken, userInfo, error, register, refreshUserInfo, setError}}>
       {children}
     </AuthContext.Provider>
   )

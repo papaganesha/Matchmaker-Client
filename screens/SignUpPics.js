@@ -17,17 +17,25 @@ import { BASE_URL } from '../config';
 
 export default function SignUpPics() {
     const navigation = useNavigation()
-    const [error, setError] = useState("")
     let [loading, setLoading] = useState(false)
-    const { userToken, userInfo } = useContext(AuthContext)
+    const { userToken, userInfo, error, setError } = useContext(AuthContext)
 
     const { logout } = useContext(AuthContext)
 
-    return (
-        <View style={tw`flex-1 w-full justify-center items-center pt-15`}>
-            {!!error && <Text style={tw`w-full text-black my-2`}>{error}</Text>}
-            <FileInput />
+    useEffect(() => {
+        setError("")
+    }, [])
 
+    return (
+        <View style={tw`flex-1 w-full justify-center items-center bg-white`}>
+            <View style={tw`flex w-full h-1/4 items-start justify-center px-4`}>
+                <Text style={tw`text-3xl font-bold ml-6 pt-15`}>Escolha uma foto</Text>
+                
+            </View>
+            {!!error && <View><Text style={tw`flex w-85 mb-2 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text></View>}
+
+
+            <FileInput />
         </View>
     )
 }
@@ -42,10 +50,11 @@ const FileInput = () => {
     const [profileImage, setProfileImage] = useState(null);
     const [pictures, setPictures] = useState([])
 
-    const { userToken, userInfo } = useContext(AuthContext)
+    const { userToken, userInfo, error, setError } = useContext(AuthContext)
 
 
     const openImageLibraryAvatar = async () => {
+        setLoading(true)
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
         if (status !== 'granted') {
@@ -59,15 +68,16 @@ const FileInput = () => {
             });
 
             uploadProfileImage()
-            setProfileImage(response.uri);
 
             if (!response.cancelled) {
                 setProfileImage(response.uri);
             }
         }
+        setLoading(false)
     };
 
     const uploadProfileImage = async () => {
+        setLoading(true)
         const formData = new FormData();
         formData.append('profile', {
             name: new Date() + '_profile',
@@ -84,11 +94,16 @@ const FileInput = () => {
         }).then(res => {
             if (res.data.success) {
                 console.log("Upload feito com sucesso")
+                //setProfileImage(profileImage)
+                setError("Upload feito com sucesso")
+                setProfileImage(response.uri)
             }
-            console.log("RES ", res.data);
         }).catch(err => {
-            console.log("ERR ", err.response.data.error);
+            console.log("ERR ", err.response.data);
+            setError("Faça upload novamente")
         });
+        setLoading(false)
+
     }
 
     const openImageLibrary = async () => {
@@ -131,80 +146,59 @@ const FileInput = () => {
             if (res.data.success) {
                 console.log("Upload feito com sucesso")
             }
-            console.log("RES ", res.data);
+            
         }).catch(err => {
-            console.log("ERR ", err.response.data.error);
+            setError(err.response.data.error)
         });
 
     }
 
-    const getUserPics = () => {
-        setLoading(true)
-        axios.get(`${BASE_URL}user`, {
-            headers: {
-                Authorization: `${userToken}`,
-            }
-        }
-        ).then(res => {
-            if (res.data.data.pictures !== []) {
-                console.log(res.data.data.pictures)
-                setPictures(res.data.data.pictures)
-            }
-        })
-            .catch(err => {
-                console.log(err.response.data.error)
-                setError(err.response.data.error)
-            })
-        setLoading(false)
-    }
 
-    const RenderPictures = () => {
-        console.log(pictures)
-        if(pictures){
-            pictures.map(elem => {
-                console.log("drip")
-                console.log(elem)
-                return (<View style={tw`flex w-1/3 h-40  items-center justify-center p-2`}><Image style={tw`flex w-full h-full rounded-lg border`} source={{ uri: elem }} /></View>)
-            })
+    const checkUpload = () => {
+        console.log("AA ",profileImage)
+        if (profileImage) {
+            navigation.navigate("SignUpInterests")
+        } else {
+            setError("Escolha uma foto")
         }
     }
 
-    
+    const RenderImage = () => {
+        if (loading) {
+            return (
+                <View style={tw`flex w-3/4 h-3/4 justify-center items-center`}>
+                    <ActivityIndicator size={25} color="black" />
+                </View>
+            )
+        }
+        if(profileImage){
+            return(
+                <Image
+                    resizeMode="contain"
+                    source={{ uri: profileImage }}
+                    style={tw`flex w-75 h-75 justify-center items-center border rounded-full`}
+                />
+            )
+        }
+    }
+
 
     return (
         <View style={tw`flex-1 w-full bg-white`}>
-            <View style={tw`flex w-full h-50 items-center border`}>
+
+            <View style={tw`flex w-full h-9/12 items-center justify-center  `}>
                 <TouchableOpacity
                     onPress={openImageLibraryAvatar}
-                    style={styles.uploadBtnContainer}
-                >
-                    {profileImage ? (
-                        <Image
-                            resizeMode="resize"
-                            source={{ uri: profileImage }}
-                            style={tw`w-full h-full self-center `}
-                        />
-                    ) : (
-                        <Text style={styles.uploadBtn}>Upload Profile Image</Text>
-                    )}
+                  style={tw`flex w-75 h-75 justify-center items-center border rounded-full border-dashed`}
+                    >
+                <RenderImage/>
                 </TouchableOpacity>
             </View>
 
-
-            <View style={tw`flex w-full h-1/3 flex-row flex-wrap mt-15 px-6`}>
-                <TouchableOpacity style={tw` w-1/3 h-40 justify-center p-4`} onPress={openImageLibrary}>
-                    {loading ? (
-                        <ActivityIndicator size="small" color="#FFF" />
-                    ) : (
-                        <Icon name="plus-square-o" style={tw``} size={100} color="black" />
-                    )}
-                </TouchableOpacity>
-                <RenderPictures />
-            </View>
             <View
                 style={tw`flex w-11/12 h-10 bg-red-600 justify-center items-center rounded-2xl mb-8 self-center`}
                 onStartShouldSetResponder={() => {
-                    navigation.navigate("SignUpInterests")
+                    checkUpload()
                 }}
             >
                 <Text style={tw`text-white text-base`}>
@@ -222,10 +216,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        height: 200,
     },
     uploadBtnContainer: {
-        height: '80%',
-        width: 275,
+        height: '100%',
+        width: '100%',
         borderRadius: 125 / 2,
         justifyContent: 'center',
         alignItems: 'center',
