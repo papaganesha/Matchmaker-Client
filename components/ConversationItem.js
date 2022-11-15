@@ -53,9 +53,13 @@ const styles = StyleSheet.create({
 })
 
 
-const ConversationItem = ({ user, lastMessage, time, username }) => {
+const ConversationItem = ({ user, lastMessage, time, username, returnLastMessage }) => {
 	console.log("CVITEM")
 	const navigation = useNavigation();
+
+	useEffect(()=>{
+		
+	},[])
 
 	return (
 		<View style={tw`flex w-full`} key={user._id}>

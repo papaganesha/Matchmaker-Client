@@ -71,34 +71,33 @@ function returnAge(dateString) {
 }
 
 
-
-
 const alreadyRemoved = []
 
 const Advanced = () => {
   const navigation = useNavigation()
   const { userInfo, userToken } = useContext(AuthContext)
-  const [usersInfo, setUsersInfo] = useState([])
-  const [lastDirection, setLastDirection] = useState()
   const [loading, setLoading] = useState(false)
+  const [usersInfo, setUsersInfo] = useState([])
 
 
+const getUsersInfo = () => {
+  setLoading(true)
+    axios.get(`${BASE_URL}users`, {
+      headers: {
+        'Authorization': `${userToken}`
+      }
+    }).then(res => {
+      setUsersInfo(res.data.data)
+      //console.log("aha, ", res.data.data)
+    })
+      .catch(err => {
+        console.log("GET USERS ERROR: ", err)
+      })
+    setTimeout(()=>{setLoading(false)}, 4000)
+}
 
   useEffect(() => {
-    setLoading(true)
-      axios.get(`${BASE_URL}users`, {
-        headers: {
-          'Authorization': `${userToken}`
-        }
-      }).then(res => {
-        setUsersInfo(res.data.data)
-        console.log("aha, ", res.data.data)
-      })
-        .catch(err => {
-          console.log("GET USERS ERROR: ", err)
-        })
-    setLoading(false)
-
+    getUsersInfo()
   }, [])
 
 
@@ -127,6 +126,7 @@ const Advanced = () => {
 
   }
 
+  
   const swiped = (direction, user) => {
     //console.log('removing: ' + nameToDelete + ' to the ' + direction)
     if (direction === 'right') {
@@ -136,18 +136,16 @@ const Advanced = () => {
     if (direction === 'left') {
       console.log(`DISLIKED: ${user.fName} ${user.sName} to the ${direction}`)
     }
-    setLastDirection(direction)
   }
 
 
   const outOfFrame = (name) => {
     console.log(name + ' left the screen!')
+    console.log("u", usersInfo.length)
     let usersInfoState = usersInfo.filter(user => user.fName !== name)
+    console.log("S", usersInfoState.length)
     setUsersInfo(usersInfoState)
   }
-
-
-
 
 
 
@@ -195,7 +193,7 @@ const Advanced = () => {
       <View style={styles.container}>
         <View style={styles.cardContainer}>
           {usersInfo.length > 0 ? (
-            usersInfo.map((user, index) =>
+            usersInfo.map((user) =>
               <TinderCard key={user._id} onSwipe={(dir) => swiped(dir, user)} onCardLeftScreen={() => outOfFrame(user.fName)}>
                 <View style={[styles.card, tw`border rounded`]}>
                   <TouchableOpacity className="pressable" style={tw`w-full h-full`} onPress={() => { navigation.navigate("ProfileUserOnScreen", { user: user }) }}>

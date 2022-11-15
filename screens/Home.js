@@ -36,6 +36,14 @@ import Footer from '../components/Footer';
 
 
 
+function Homes() {
+  return (
+    <View style={styles.container}>
+    <SwipableCards/>
+    </View>
+  )
+}
+
 
 const Home = () => {
   const navigation = useNavigation()
@@ -210,15 +218,6 @@ export default Home
 
 
 
-
-function Homes() {
-  return (
-    <View style={styles.container}>
-    <SwipableCards/>
-
-    </View>
-  )
-}
 
 
 

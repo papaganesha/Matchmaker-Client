@@ -23,28 +23,11 @@ function returnAge(dateString) {
 const Matchs = () => {
     const navigation = useNavigation()
 
-    const { userInfo, userToken, error, setError } = useContext(AuthContext)
+    const {userToken, error, setError } = useContext(AuthContext)
     const [usersInfo, setUsersInfo] = useState([])
     const [noMessaged, setNoMessaged] = useState([])
     const [alreadyMessaged, setAlreadyMessaged] = useState([])
     const [loading, setLoading] = useState(false)
-
-
-    useEffect(() => {
-        getMatchs()
-    }, [])
-
-
-    const renderItemTop = ({ item }) => {
-        return (
-            <ItemTop item={item} />
-        )
-    }
-
-    const renderItemBottom = ({ item }) => (
-        <ItemBottom item={item} />
-    );
-
 
     const getMatchs = async () => {
         setLoading(true)
@@ -57,7 +40,6 @@ const Matchs = () => {
             .then(res => {
                 if (res.data.success) {
                     setUsersInfo(res.data.data)
-                    console.log("stonks ", usersInfo)
                     usersInfo.map(async (user, index) => {
                         let UID = user._id;
                         let limit = 50;
@@ -68,17 +50,13 @@ const Matchs = () => {
 
                         messagesRequest.fetchPrevious().then(
                             messages => {
-                                //console.log("M ", messages)
                                 if (messages.length > 0) {
-                                    //console.log(true)
                                     let checkUser = alreadyMessaged.filter(sender => sender._id == user._id)
                                     if (checkUser.length == 0) {
                                         setAlreadyMessaged([...alreadyMessaged, user])
                                     }
 
                                 } else {
-                                    //console.log(false)
-                                    //returnNoMessaged.push(user)
                                     let checkUser = noMessaged.filter(sender => sender._id == user._id)
                                     if (checkUser.length == 0) {
                                         setNoMessaged([...noMessaged, user])
@@ -98,11 +76,29 @@ const Matchs = () => {
                 console.log("GET USERS ERROR: ", err)
                 setError(err.response.data.error)
             })
-        console.log("N ", noMessaged)
-        console.log("A", alreadyMessaged)
+
 
         setLoading(false)
     }
+
+    useEffect(() => {
+        getMatchs()
+        
+    }, [])
+
+
+    const renderItemTop = ({ item }) => {
+        return (
+            <ItemTop item={item} />
+        )
+    }
+
+    const renderItemBottom = ({ item }) => (
+        <ItemBottom item={item} />
+    );
+
+
+   
 
     const RenderTop = () => {
         if (loading) {
