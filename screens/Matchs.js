@@ -104,30 +104,14 @@ const Matchs = () => {
         setLoading(false)
     }
 
-
-
-
-
-    const NoMatchs = () => (
-        <View style={tw`flex-1 justify-center items-center`}>
-            <Text style={tw`text-3xl font-bold text-black`}>Sem Matches</Text>
-            <Text style={tw`text-base font-bold text-black`}>Encontre novos matchs</Text>
-        </View>
-    )
-
-
-
-
-
-
-    if (usersInfo.length > 0) {
-        return (
-            <View style={tw`flex-1`}>
-                <View style={tw`flex h-35 justify-end`}>
-                    <Text style={tw`text-black text-3xl font-bold pl-5`}>Matchs</Text>
-                    <Text style={tw`text-black text-lg font-bold pl-5 pt-2`}>Converse com estes Matchs</Text>
-                </View>
-                {noMessaged.length > 0 ? (
+    const RenderTop = () => {
+        if (loading) {
+            <View style={tw`flex h-full w-full justify-center items-center`}>
+                <ActivityIndicator size={25} color="black" />
+            </View>
+        } else {
+            if (noMessaged.length > 0) {
+                return (
                     <SafeAreaView style={tw`flex h-3/10  justify-center items-center flex-row`}>
                         <FlatList
                             style={tw` h-full pl-3 mr-4`}
@@ -137,38 +121,81 @@ const Matchs = () => {
                             horizontal={true}
                         />
                     </SafeAreaView>
-                ) : (
+                )
+            } else {
+                return (
                     <View style={tw`flex h-3/10  justify-center items-center`}>
                         <Text style={tw`text-black`}>Encontre novos matchs</Text>
                     </View>
-                )}
-                {!!error && <Text style={tw`flex w-85 mt-7 mb-2 text-center text-base font-semibold border rounded p-1 self-center`}>{error.code}: {error.message}</Text>}
+                )
+            }
 
-                <View style={tw`flex h-12 justify-end `}>
-                    <Text style={tw`text-black text-3xl font-bold pl-5`}>Conversas</Text>
-                </View>
-                <View style={tw`flex h-full pt-4`}>
-                    {alreadyMessaged.length > 0 ? (
-                        <SafeAreaView style={tw`flex h-full justify-center items-center flex-row`}>
-                            <FlatList
-                                style={tw` h-full pt-1 px-4`}
-                                data={alreadyMessaged}
-                                renderItem={renderItemBottom}
-                                keyExtractor={item => item.id}
-                                vertical={true}
-                            />
-                        </SafeAreaView>
-                    ) : (
-                        <View style={tw`flex h-75  justify-center items-center `}>
-                            <Text style={tw`text-black`}>Inicie uma conversa</Text>
-                        </View>
-                    )}
-                </View>
-            </View >
-        )
-    } else {
-        return (<NoMatchs />)
+        }
     }
+
+    const RenderBottom = () => {
+        if (loading) {
+            <View style={tw`flex h-full w-full justify-center items-center`}>
+                <ActivityIndicator size={25} color="black" />
+            </View>
+        } else {
+            if (alreadyMessaged.length > 0) {
+                return (
+                    <SafeAreaView style={tw`flex h-full justify-center items-center flex-row`}>
+                        <FlatList
+                            style={tw` h-full pt-1 px-4`}
+                            data={alreadyMessaged}
+                            renderItem={renderItemBottom}
+                            keyExtractor={item => item.id}
+                            vertical={true}
+                        />
+                    </SafeAreaView>
+                )
+            } else {
+                return (
+                    <View style={tw`flex h-75  justify-center items-center `}>
+                        <Text style={tw`text-black`}>Inicie uma conversa</Text>
+                    </View>
+                )
+            }
+        }
+    }
+
+
+
+const NoMatchs = () => (
+    <View style={tw`flex-1 justify-center items-center`}>
+        <Text style={tw`text-3xl font-bold text-black`}>Sem Matches</Text>
+        <Text style={tw`text-base font-bold text-black`}>Encontre novos matchs</Text>
+    </View>
+)
+
+
+
+
+
+
+if (usersInfo.length > 0) {
+    return (
+        <View style={tw`flex-1`}>
+            <View style={tw`flex h-35 justify-end`}>
+                <Text style={tw`text-black text-3xl font-bold pl-5`}>Matchs</Text>
+                <Text style={tw`text-black text-lg font-bold pl-5 pt-2`}>Converse com estes Matchs</Text>
+            </View>
+            <RenderTop />
+            {!!error && <Text style={tw`flex w-85 mt-7 mb-2 text-center text-base font-semibold border rounded p-1 self-center`}>{error.code}: {error.message}</Text>}
+
+            <View style={tw`flex h-12 justify-end `}>
+                <Text style={tw`text-black text-3xl font-bold pl-5`}>Conversas</Text>
+            </View>
+            <View style={tw`flex h-full pt-4`}>
+                <RenderBottom />
+            </View>
+        </View >
+    )
+} else {
+    return (<NoMatchs />)
+}
 }
 
 
@@ -227,24 +254,24 @@ const ItemBottom = ({ item }) => {
     }
 
     function convertStringToDate(strTime) {
-		var timestamp = Number(strTime) * 1000;
-		var date = new Date(timestamp);
-		var day = date.getDate();
-		var month = date.getMonth()
-		var year = date.getFullYear().toString().substr(-2)
-		var hours = date.getHours();
-		var minutes = date.getMinutes();
-		var ampm = hours >= 12 ? "pm" : "am";
-		hours = hours % 12;
-		hours = hours ? hours : 12;
-		minutes = minutes < 10 ? "0" + minutes : minutes;
-		var timestr = `${hours}:${minutes} ${ampm}`
-		var datestr = `${day}/${month}/${year}`
-		return `${timestr} ${datestr}`
-	}
+        var timestamp = Number(strTime) * 1000;
+        var date = new Date(timestamp);
+        var day = date.getDate();
+        var month = date.getMonth()
+        var year = date.getFullYear().toString().substr(-2)
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? "pm" : "am";
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        var timestr = `${hours}:${minutes} ${ampm}`
+        var datestr = `${day}/${month}/${year}`
+        return `${timestr} ${datestr}`
+    }
 
 
-    useEffect(() => {   
+    useEffect(() => {
         returnLastMessage(item)
     }, [])
 

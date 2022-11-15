@@ -1,5 +1,8 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { ScrollView } from "react-native";
+import { View, Text } from "react-native";
+import tw from 'twrnc';
+
 import { AuthContext } from "../../context/AuthContext";
 
 import { CometChat } from '@cometchat-pro/react-native-chat';
@@ -55,7 +58,7 @@ const MessagesList = ({ onSwipeToReply, user, messages }) => {
 				scrollView.current.scrollToEnd({ animated: true })
 			}}
 		>
-			{messages.length > 0 && messages.map((message, index) => (
+			{messages.length > 0 ? messages.map((message, index) => (
 				<Message
 					key={index}
 					time={message.sentAt}
@@ -63,7 +66,11 @@ const MessagesList = ({ onSwipeToReply, user, messages }) => {
 					message={message.text}
 					onSwipe={onSwipeToReply}
 				/>
-			))}
+			)):(
+				<View style={tw`w-full items-center h-20 justify-center`}> 
+					<Text  style={tw`px-6 py-2 text-base border bg-gray-200 rounded`}>Mande a primeira mensagem</Text>
+				</View>
+			)}
 		</ScrollView>
 	);
 };

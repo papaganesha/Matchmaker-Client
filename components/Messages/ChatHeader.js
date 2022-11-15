@@ -12,7 +12,7 @@ const ChatHeader = ({ username, bio, picture, onlineStatus, onPress }) => {
 				<Icon name="angle-left" size={30} color={"white"} />
 			</TouchableOpacity>
 			<View style={styles.profileOptions}>
-				<TouchableOpacity style={styles.profile}>
+				<TouchableOpacity style={styles.profile}  onPress={onPress}>
 					<Image style={styles.image} source={{ uri: picture }} />
 					<View style={styles.usernameAndOnlineStatus}>
 						<Text style={styles.username}>{username}</Text>
