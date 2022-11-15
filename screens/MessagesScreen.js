@@ -26,6 +26,7 @@ const MessagesScreen = ({ navigation, route }) => {
 		  new CometChat.MessageListener({
 			onTextMessageReceived: textMessage => {
 			  console.log("Text message received: ",textMessage)
+			  returnAllConversation()
 			},
 			onMediaMessageReceived: mediaMessage => {
 			  console.log("Media message received: ",mediaMessage)
