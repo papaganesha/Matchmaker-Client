@@ -25,7 +25,7 @@ const TextField = ({ label, ...inputProps }) => {
   )
 }
 
-const capitals = ["Rio de Janeiro", "São Paulo", "Porto Alegre", "Paraná"]
+const capitals = ["Porto Alegre", "Florianópolis", "Rio de Janeiro", "São Paulo", "Paraná", "Curitiba"]
 
 
 const SignUpNameAndCity = ({ navigation }) => {

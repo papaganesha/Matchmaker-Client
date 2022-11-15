@@ -188,7 +188,7 @@ if (usersInfo.length > 0) {
             <View style={tw`flex h-12 justify-end `}>
                 <Text style={tw`text-black text-3xl font-bold pl-5`}>Conversas</Text>
             </View>
-            <View style={tw`flex h-full pt-4`}>
+            <View style={tw`flex h-full pt-2 px-1`}>
                 <RenderBottom />
             </View>
         </View >
@@ -208,7 +208,7 @@ const ItemTop = ({ item }) => {
         }}>
 
             <ImageBackground style={tw`flex w-full h-full self-center rounded justify-end items-end`} source={item.mainPicture ? { uri: item.mainPicture } : require("../assets/placeholder1.jpg")}>
-                <View style={tw`w-full h-10 border bg-black opacity-75 items-center justify-center`}>
+                <View style={tw`w-full h-10 bg-black opacity-75 items-center justify-center`}>
                     <Text style={tw` text-white font-semibold`}>{`${item.fName} ${item.sName}, ${returnAge(item.birthDate)}`}</Text>
                 </View>
             </ImageBackground>

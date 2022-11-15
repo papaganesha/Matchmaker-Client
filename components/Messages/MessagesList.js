@@ -67,8 +67,8 @@ const MessagesList = ({ onSwipeToReply, user, messages }) => {
 					onSwipe={onSwipeToReply}
 				/>
 			)):(
-				<View style={tw`w-full items-center h-20 justify-center`}> 
-					<Text  style={tw`px-6 py-2 text-base border bg-gray-200 rounded`}>Mande a primeira mensagem</Text>
+				<View style={tw`w-full items-center h-24 justify-center`}> 
+					<Text  style={tw`px-8 py-2 text-base border border-gray-500 bg-gray-200 rounded`}>Mande a primeira mensagem</Text>
 				</View>
 			)}
 		</ScrollView>

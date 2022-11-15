@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
 	},
 	imageContainer: {
 		marginRight: 15,
-		marginTop: 18,
+		marginTop: 20,
 		borderRadius: 25,
 		height: 50,
 		width: 50,
@@ -59,7 +59,7 @@ const ConversationItem = ({ user, lastMessage, time, username }) => {
 
 	return (
 		<View style={tw`flex w-full`} key={user._id}>
-			<TouchableOpacity style={[styles.conversation, tw`border my-2 rounded pr-4`]}
+			<TouchableOpacity style={[styles.conversation, tw`border border-gray-500 my-2 rounded pr-4`]}
 				onPress={() => navigation.navigate('MessagesScreen', {
 					user: user
 				})}>
