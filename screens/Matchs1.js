@@ -5,25 +5,87 @@ import tw from 'twrnc';
 import axios from 'axios'
 import { useNavigation } from '@react-navigation/native'
 import { AuthContext } from '../context/AuthContext';
-
 import { CometChat } from '@cometchat-pro/react-native-chat';
-
 import { BASE_URL } from '../config'
-import { ScrollView } from 'react-native-gesture-handler';
-import { Image } from 'react-native-elements';
-
 import ConversationItem from '../components/ConversationItem'
 
-
+function returnAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
 
 const Matchs = () => {
     const navigation = useNavigation()
 
-    const { userInfo, userToken, error, setError } = useContext(AuthContext)
+    const {userToken, error, setError } = useContext(AuthContext)
     const [usersInfo, setUsersInfo] = useState([])
     const [noMessaged, setNoMessaged] = useState([])
     const [alreadyMessaged, setAlreadyMessaged] = useState([])
     const [loading, setLoading] = useState(false)
+
+    const getMatchs = async () => {
+        setLoading(true)
+
+        axios.get(`${BASE_URL}matchs`, {
+            headers: {
+                'Authorization': `${userToken}`
+            }
+        })
+            .then(res => {
+                if (res.data.success) {
+                    setUsersInfo(res.data.data)
+                    usersInfo.map(async (user, index) => {
+                        let UID = user._id;
+                        let limit = 50;
+                        let messagesRequest = new CometChat.MessagesRequestBuilder()
+                            .setUID(UID)
+                            .setLimit(limit)
+                            .build();
+
+                        messagesRequest.fetchPrevious().then(
+                            messages => {
+                                if (messages.length > 0) {
+                                    let checkUser = alreadyMessaged.filter(sender => sender._id == user._id)
+                                    if (checkUser.length == 0) {
+                                        setAlreadyMessaged([...alreadyMessaged, user])
+                                    }
+
+                                } else {
+                                    let checkUser = noMessaged.filter(sender => sender._id == user._id)
+                                    if (checkUser.length == 0) {
+                                        setNoMessaged([...noMessaged, user])
+                                    }
+
+                                }
+                            }, error => {
+                                console.log(error)
+                                setError(error)
+                            }
+                        )
+
+                    })
+                }
+            })
+            .catch(err => {
+                console.log("GET USERS ERROR: ", err)
+                setError(err.response.data.error)
+            })
+
+
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        getMatchs()
+        
+    }, [])
+
 
     const renderItemTop = ({ item }) => {
         return (
@@ -36,102 +98,14 @@ const Matchs = () => {
     );
 
 
-    const returnIfHasMessaged = async (user) => {
-        let returnVar
-        let UID = user._id;
-        let limit = 30;
-        let messagesRequest = new CometChat.MessagesRequestBuilder()
-            .setUID(UID)
-            .setLimit(limit)
-            .build();
+   
 
-        messagesRequest.fetchPrevious().then(
-            messages => {
-                if (messages.length > 0) {
-                    returnVar = true
-                } else {
-                    returnVar = false
-                }
-            }, error => {
-                setError(error)
-                returnVar = true
-            }
-        );
-        return returnVar
-
-    }
-
-    const getMatchs = async () => {
-        setLoading(true)
-        let returnAlreadyMessaged = []
-        let returnNoMessaged = []
-        axios.get(`${BASE_URL}matchs`, {
-            headers: {
-                'Authorization': `${userToken}`
-            }
-        })
-            .then(res => {
-                //console.log("=>", res.data)
-                if (res.data.success) {
-                    //console.log(res.data)
-                    setUsersInfo(res.data.data)
-
-                    usersInfo.map((user, index) => {
-                        let UID = user._id;
-                        let limit = 30;
-                        let messagesRequest = new CometChat.MessagesRequestBuilder()
-                            .setUID(UID)
-                            .setLimit(limit)
-                            .build();
-
-                        messagesRequest.fetchPrevious().then(
-                            messages => {
-                                //console.log(messages.length)
-                                if (messages.length > 0) {
-                                    console.log(true)
-                                    //returnAlreadyMessaged.push(user)
-                                    let checkUser = alreadyMessaged.filter(sender => sender._id == user._id)
-                                    if (checkUser.length == 0) {
-                                        setAlreadyMessaged([...alreadyMessaged, user])
-                                    }
-
-                                } else {
-                                    console.log(false)
-                                    //returnNoMessaged.push(user)
-                                    let checkUser = noMessaged.filter(sender => sender._id == user._id)
-                                    if (checkUser.length == 0) {
-                                        setNoMessaged([...noMessaged, user])
-                                    }
-
-                                }
-                            }, error => {
-                                setError(error)
-                            }
-                        )
-                    })
-
-                    // setAlreadyMessaged(returnAlreadyMessaged)
-                    // setNoMessaged(returnNoMessaged)
-                    // console.log("already ", alreadyMessaged)
-                    // console.log("no ", noMessaged)
-
-                }
-
-            })
-            .catch(err => {
-                console.log("GET USERS ERROR: ", err)
-                setError(err.response.data.error)
-            })
-        setLoading(false)
-    }
-
-    const RenderTopCards = () => {
+    const RenderTop = () => {
         if (loading) {
-            return (
-                <ActivityIndicator color="black" size={15} />
-            )
+            <View style={tw`flex h-full w-full justify-center items-center`}>
+                <ActivityIndicator size={25} color="black" />
+            </View>
         } else {
-
             if (noMessaged.length > 0) {
                 return (
                     <SafeAreaView style={tw`flex h-3/10  justify-center items-center flex-row`}>
@@ -151,16 +125,16 @@ const Matchs = () => {
                     </View>
                 )
             }
+
         }
     }
 
-    const RenderBottomCards = () => {
+    const RenderBottom = () => {
         if (loading) {
-            return (
-                <ActivityIndicator color="black" size={15} />
-            )
+            <View style={tw`flex h-full w-full justify-center items-center`}>
+                <ActivityIndicator size={25} color="black" />
+            </View>
         } else {
-
             if (alreadyMessaged.length > 0) {
                 return (
                     <SafeAreaView style={tw`flex h-full justify-center items-center flex-row`}>
@@ -183,67 +157,54 @@ const Matchs = () => {
         }
     }
 
-    const NoMatchs = () => (
-        <View style={`w-full border bg-red-500`}>
-                    <Text style={`text-2xl font-bold text-black`}>Sem Matches</Text>
-                    <Text style={`font-bold text-black`}>Encontre novos matchs</Text>
+
+
+const NoMatchs = () => (
+    <View style={tw`flex-1 justify-center items-center`}>
+        <Text style={tw`text-3xl font-bold text-black`}>Sem Matches</Text>
+        <Text style={tw`text-base font-bold text-black`}>Encontre novos matchs</Text>
+    </View>
+)
+
+
+
+
+
+
+if (usersInfo.length > 0) {
+    return (
+        <View style={tw`flex-1`}>
+            <View style={tw`flex h-35 justify-end`}>
+                <Text style={tw`text-black text-3xl font-bold pl-5`}>Matchs</Text>
+                <Text style={tw`text-black text-lg font-bold pl-5 pt-2`}>Converse com estes Matchs</Text>
             </View>
+            <RenderTop />
+            {!!error && <Text style={tw`flex w-85 mt-7 mb-2 text-center text-base font-semibold border rounded p-1 self-center`}>{error.code}: {error.message}</Text>}
+
+            <View style={tw`flex h-12 justify-end `}>
+                <Text style={tw`text-black text-3xl font-bold pl-5`}>Conversas</Text>
+            </View>
+            <View style={tw`flex h-full pt-2 px-1`}>
+                <RenderBottom />
+            </View>
+        </View >
     )
-
-    useEffect(() => {
-        getMatchs()
-        setError("")
-
-    }, [])
-
-
-        return (
-            <View style={tw`flex-1`}>
-                <View style={tw`flex h-35 justify-end`}>
-                    <Text style={tw`text-black text-3xl font-bold pl-5`}>Matchs</Text>
-                    <Text style={tw`text-black text-lg font-bold pl-5 pt-2`}>Converse com estes Matchs</Text>
-                </View>
-                <RenderTopCards />
-
-                {!!error && <Text style={tw`flex w-85 mt-7 mb-2 text-center text-base font-semibold border rounded p-1 self-center`}>{error.code}: {error.message}</Text>}
-
-                <View style={tw`flex h-12 justify-end `}>
-                    <Text style={tw`text-black text-3xl font-bold pl-5`}>Conversas</Text>
-                </View>
-                <View style={tw`flex h-full pt-4`}>
-                    <RenderBottomCards />
-                </View>
-            </View >
-        )
-  
+} else {
+    return (<NoMatchs />)
+}
 }
 
-
-
-export default Matchs
-
-function returnAge(dateString) {
-    var today = new Date();
-    var birthDate = new Date(dateString);
-    var age = today.getFullYear() - birthDate.getFullYear();
-    var m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-    }
-    return age;
-}
 
 const ItemTop = ({ item }) => {
     const navigation = useNavigation()
-
+    console.log("TOP")
     return (
-        <TouchableOpacity style={tw`flex my-4 mx-2 w-40 h-45 self-center border rounded`} onPress={() => {
-            console.log("AQUI")
+        <TouchableOpacity key={item._id} style={tw`flex my-4 mx-2 w-40 h-45 self-center border rounded`} onPress={() => {
             navigation.navigate("MessagesScreen", { user: item })
         }}>
 
             <ImageBackground style={tw`flex w-full h-full self-center rounded justify-end items-end`} source={item.mainPicture ? { uri: item.mainPicture } : require("../assets/placeholder1.jpg")}>
-                <View style={tw`w-full h-10 border bg-black opacity-75 items-center justify-center`}>
+                <View style={tw`w-full h-10 bg-black opacity-75 items-center justify-center`}>
                     <Text style={tw` text-white font-semibold`}>{`${item.fName} ${item.sName}, ${returnAge(item.birthDate)}`}</Text>
                 </View>
             </ImageBackground>
@@ -254,10 +215,12 @@ const ItemTop = ({ item }) => {
 }
 
 
+
 const ItemBottom = ({ item }) => {
     const navigation = useNavigation()
     const [lastMessage, setLastMessage] = useState([])
-
+    console.log("BOTTOM")
+    const username = `${item.fName} ${item.sName}`
 
     function returnLastMessage(user) {
         let UID = user._id;
@@ -269,20 +232,40 @@ const ItemBottom = ({ item }) => {
 
         messagesRequest.fetchPrevious().then(
             messages => {
-                //console.log(messages)
+
                 if (messages.length > 0) {
                     if (messages[messages.length - 1].sender.uid !== UID) {
                         setLastMessage({ text: `Você disse ${messages[messages.length - 1].text}`, time: messages[messages.length - 1].sentAt, hasBlockedMe: messages[messages.length - 1].hasBlockedMe })
                     } else {
                         setLastMessage({ text: `${messages[messages.length - 1].sender.name} disse ${messages[messages.length - 1].text}`, time: messages[messages.length - 1].sentAt, hasBlockedMe: messages[messages.length - 1].hasBlockedMe })
                     }
-                    console.log(lastMessage)
                 }
+                console.log("BOT MESSAGES", lastMessage);
+
+
             }, error => {
                 setError(error)
             }
         );
     }
+
+    function convertStringToDate(strTime) {
+        var timestamp = Number(strTime) * 1000;
+        var date = new Date(timestamp);
+        var day = date.getDate();
+        var month = date.getMonth()
+        var year = date.getFullYear().toString().substr(-2)
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? "pm" : "am";
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        var timestr = `${hours}:${minutes} ${ampm}`
+        var datestr = `${day}/${month}/${year}`
+        return `${timestr} ${datestr}`
+    }
+
 
     useEffect(() => {
         returnLastMessage(item)
@@ -290,6 +273,14 @@ const ItemBottom = ({ item }) => {
 
 
     return (
-        <ConversationItem user={item} lastMessage={lastMessage.text} time={lastMessage.time} username={`${item.fName} ${item.sName}`} returnLastMessage={returnLastMessage} />
+        <ConversationItem user={item} lastMessage={lastMessage.text} time={convertStringToDate(lastMessage.time)} username={username} />
     )
+
 }
+
+
+
+
+export default Matchs
+
+

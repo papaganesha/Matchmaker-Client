@@ -57,9 +57,9 @@ const ConversationItem = ({ user, lastMessage, time, username, returnLastMessage
 	console.log("CVITEM")
 	const navigation = useNavigation();
 
-	useEffect(()=>{
-		
-	},[])
+	useEffect(() => {
+
+	}, [])
 
 	return (
 		<View style={tw`flex w-full`} key={user._id}>
@@ -73,12 +73,12 @@ const ConversationItem = ({ user, lastMessage, time, username, returnLastMessage
 				<View style={tw`flex-1 justify-center`}>
 					<View style={tw`flex flex-row justify-between`}>
 						<Text numerOfLine={1} style={tw`mt-5 text-lg text-black w-40 font-semibold`}>{username}</Text>
-
 						<Text style={tw`mt-6 text-xs text-black font-semibold`}>{time}</Text>
 
 					</View>
 					<View style={tw`flex flex-row justify-between`}>
 						<Text style={tw`text-black text-sm w-full font-semi`}>{lastMessage}</Text>
+
 					</View>
 				</View>
 			</TouchableOpacity>

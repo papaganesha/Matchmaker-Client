@@ -33,8 +33,9 @@ const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConvers
 
 	const sendMessage = (msg, receiverID) => {
 		if (msg.length > 0) {
+			let trimmedMsg = msg.trim()
 			let receiverType = CometChat.RECEIVER_TYPE.USER
-			let textMessage = new CometChat.TextMessage(receiverID, msg, receiverType)
+			let textMessage = new CometChat.TextMessage(receiverID, trimmedMsg, receiverType)
 
 			CometChat.sendMessage(textMessage).then(
 				message => {

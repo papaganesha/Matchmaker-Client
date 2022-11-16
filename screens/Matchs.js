@@ -8,6 +8,8 @@ import { AuthContext } from '../context/AuthContext';
 import { CometChat } from '@cometchat-pro/react-native-chat';
 import { BASE_URL } from '../config'
 import ConversationItem from '../components/ConversationItem'
+import { useIsFocused } from "@react-navigation/core";
+
 
 function returnAge(dateString) {
     var today = new Date();
@@ -20,71 +22,87 @@ function returnAge(dateString) {
     return age;
 }
 
+
+
 const Matchs = () => {
     const navigation = useNavigation()
-
-    const {userToken, error, setError } = useContext(AuthContext)
+    const isFocused = useIsFocused();
+    const { userToken, error, setError } = useContext(AuthContext)
     const [usersInfo, setUsersInfo] = useState([])
     const [noMessaged, setNoMessaged] = useState([])
     const [alreadyMessaged, setAlreadyMessaged] = useState([])
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
+
 
     const getMatchs = async () => {
-        setLoading(true)
 
-        axios.get(`${BASE_URL}matchs`, {
+        const res = await axios.get(`${BASE_URL}matchs`, {
             headers: {
                 'Authorization': `${userToken}`
             }
         })
-            .then(res => {
-                if (res.data.success) {
-                    setUsersInfo(res.data.data)
-                    usersInfo.map(async (user, index) => {
-                        let UID = user._id;
-                        let limit = 50;
-                        let messagesRequest = new CometChat.MessagesRequestBuilder()
-                            .setUID(UID)
-                            .setLimit(limit)
-                            .build();
-
-                        messagesRequest.fetchPrevious().then(
-                            messages => {
-                                if (messages.length > 0) {
-                                    let checkUser = alreadyMessaged.filter(sender => sender._id == user._id)
-                                    if (checkUser.length == 0) {
-                                        setAlreadyMessaged([...alreadyMessaged, user])
-                                    }
-
-                                } else {
-                                    let checkUser = noMessaged.filter(sender => sender._id == user._id)
-                                    if (checkUser.length == 0) {
-                                        setNoMessaged([...noMessaged, user])
-                                    }
-
-                                }
-                            }, error => {
-                                console.log(error)
-                                setError(error)
-                            }
-                        )
-
-                    })
-                }
-            })
-            .catch(err => {
-                console.log("GET USERS ERROR: ", err)
-                setError(err.response.data.error)
-            })
-
-
+        //console.log(res)
+        const json = await res.data.data
+        
+        // let returnArray = [json, noMessaged, alreadyMessaged]
+        //console.log(json)
         setLoading(false)
+        return json
     }
 
     useEffect(() => {
-        getMatchs()
-        
+        getMatchs().then(users => {
+            setUsersInfo(users)
+            // setNoMessaged(users[1])
+            // setAlreadyMessaged(users[2])
+        })
+
     }, [])
+
+    useEffect(() => {
+       if(usersInfo.length > 0){
+        usersInfo.map(async (user, index) => {
+            let UID = user._id;
+            let limit = 50;
+            let messagesRequest = new CometChat.MessagesRequestBuilder()
+                .setUID(UID)
+                .setLimit(limit)
+                .build();
+
+            const messages = await messagesRequest.fetchPrevious()
+                    if (messages.length > 0) {
+                        let checkUser = alreadyMessaged.filter(sender => sender._id == user._id)
+                        if (checkUser.length == 0) {
+                            setAlreadyMessaged([...alreadyMessaged, user])
+                        }
+
+                    } else {
+                        let checkUser = noMessaged.filter(sender => sender._id == user._id)
+                        if (checkUser.length == 0) {
+                            setNoMessaged([...noMessaged, user])
+                        }
+
+                    }
+
+        })
+        console.log("already ", alreadyMessaged)
+        console.log("no", noMessaged)
+       }
+      }, [setUsersInfo]);
+
+
+      
+//   useEffect(() => {
+//     if (isFocused) {
+//         getMatchs().then(users => {
+//             setUsersInfo(users)
+//             // setNoMessaged(users[1])
+//             // setAlreadyMessaged(users[2])
+//         })
+
+//     }
+//   }, [isFocused]);
+
 
 
     const renderItemTop = ({ item }) => {
@@ -98,7 +116,7 @@ const Matchs = () => {
     );
 
 
-   
+
 
     const RenderTop = () => {
         if (loading) {
@@ -159,39 +177,39 @@ const Matchs = () => {
 
 
 
-const NoMatchs = () => (
-    <View style={tw`flex-1 justify-center items-center`}>
-        <Text style={tw`text-3xl font-bold text-black`}>Sem Matches</Text>
-        <Text style={tw`text-base font-bold text-black`}>Encontre novos matchs</Text>
-    </View>
-)
-
-
-
-
-
-
-if (usersInfo.length > 0) {
-    return (
-        <View style={tw`flex-1`}>
-            <View style={tw`flex h-35 justify-end`}>
-                <Text style={tw`text-black text-3xl font-bold pl-5`}>Matchs</Text>
-                <Text style={tw`text-black text-lg font-bold pl-5 pt-2`}>Converse com estes Matchs</Text>
-            </View>
-            <RenderTop />
-            {!!error && <Text style={tw`flex w-85 mt-7 mb-2 text-center text-base font-semibold border rounded p-1 self-center`}>{error.code}: {error.message}</Text>}
-
-            <View style={tw`flex h-12 justify-end `}>
-                <Text style={tw`text-black text-3xl font-bold pl-5`}>Conversas</Text>
-            </View>
-            <View style={tw`flex h-full pt-2 px-1`}>
-                <RenderBottom />
-            </View>
-        </View >
+    const NoMatchs = () => (
+        <View style={tw`flex-1 justify-center items-center`}>
+            <Text style={tw`text-3xl font-bold text-black`}>Sem Matches</Text>
+            <Text style={tw`text-base font-bold text-black`}>Encontre novos matchs</Text>
+        </View>
     )
-} else {
-    return (<NoMatchs />)
-}
+
+
+
+
+
+
+    if (usersInfo.length > 0) {
+        return (
+            <View style={tw`flex-1`}>
+                <View style={tw`flex h-35 justify-end`}>
+                    <Text style={tw`text-black text-3xl font-bold pl-5`}>Matchs</Text>
+                    <Text style={tw`text-black text-lg font-bold pl-5 pt-2`}>Converse com estes Matchs</Text>
+                </View>
+                <RenderTop />
+                {!!error && <Text style={tw`flex w-85 mt-7 mb-2 text-center text-base font-semibold border rounded p-1 self-center`}>{error.code}: {error.message}</Text>}
+
+                <View style={tw`flex h-12 justify-end `}>
+                    <Text style={tw`text-black text-3xl font-bold pl-5`}>Conversas</Text>
+                </View>
+                <View style={tw`flex h-full pt-2 px-1`}>
+                    <RenderBottom />
+                </View>
+            </View >
+        )
+    } else {
+        return (<NoMatchs />)
+    }
 }
 
 

@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import tw from 'twrnc';
 import axios from 'axios'
 import { CometChat } from '@cometchat-pro/react-native-chat';
+import { useIsFocused } from "@react-navigation/core";
 
 
 
@@ -47,9 +48,8 @@ function Homes() {
 
 const Home = () => {
   const navigation = useNavigation()
-  const { logout, userInfo, userToken, refreshUserInfo } = useContext(AuthContext)
-  const [firstLogin, setFirstLogin] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const { userInfo, refreshUserInfo } = useContext(AuthContext)
+  const isFocused = useIsFocused();
 
 
   const initializeCometchat = () => {
@@ -170,8 +170,16 @@ const Home = () => {
 
   useEffect(() => {
     initializeCometchat()
-    refreshUserInfo()
+    //refreshUserInfo()
   }, [])
+
+  useEffect(() => {
+    if (isFocused) {
+      //initializeCometchat()
+      refreshUserInfo()
+    }
+  }, [isFocused]);
+
 
 
 
