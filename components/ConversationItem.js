@@ -53,13 +53,12 @@ const styles = StyleSheet.create({
 })
 
 
+
+
+
 const ConversationItem = ({ user, lastMessage, time, username, returnLastMessage }) => {
-	console.log("CVITEM")
 	const navigation = useNavigation();
 
-	useEffect(() => {
-
-	}, [])
 
 	return (
 		<View style={tw`flex w-full`} key={user._id}>
@@ -73,12 +72,20 @@ const ConversationItem = ({ user, lastMessage, time, username, returnLastMessage
 				<View style={tw`flex-1 justify-center`}>
 					<View style={tw`flex flex-row justify-between`}>
 						<Text numerOfLine={1} style={tw`mt-5 text-lg text-black w-40 font-semibold`}>{username}</Text>
-						<Text style={tw`mt-6 text-xs text-black font-semibold`}>{time}</Text>
+						{time ? (
+							<Text style={tw`mt-6 text-xs text-black font-semibold`}>{time}</Text>
+						) : (
+							<ActivityIndicator size={15} color="black" style={tw`mt-6`}/>
+						)}
 
 					</View>
 					<View style={tw`flex flex-row justify-between`}>
-						<Text style={tw`text-black text-sm w-full font-semi`}>{lastMessage}</Text>
-
+						
+						{time ? (
+							<Text style={tw`text-black text-sm w-full font-semibold`}>{lastMessage}</Text>
+						) : (
+							<ActivityIndicator size={15} color="black" style={tw`mt-2`}/>
+						)}
 					</View>
 				</View>
 			</TouchableOpacity>

@@ -28,80 +28,45 @@ const Matchs = () => {
     const navigation = useNavigation()
     const isFocused = useIsFocused();
     const { userToken, error, setError } = useContext(AuthContext)
-    const [usersInfo, setUsersInfo] = useState([])
     const [noMessaged, setNoMessaged] = useState([])
     const [alreadyMessaged, setAlreadyMessaged] = useState([])
+    const [usersInfo, setUsersInfo] = useState([])
     const [loading, setLoading] = useState(true)
 
 
     const getMatchs = async () => {
-
         const res = await axios.get(`${BASE_URL}matchs`, {
             headers: {
                 'Authorization': `${userToken}`
             }
         })
-        //console.log(res)
         const json = await res.data.data
-        
-        // let returnArray = [json, noMessaged, alreadyMessaged]
-        //console.log(json)
         setLoading(false)
         return json
+
     }
 
     useEffect(() => {
+        setLoading(true)
         getMatchs().then(users => {
-            setUsersInfo(users)
-            // setNoMessaged(users[1])
-            // setAlreadyMessaged(users[2])
-        })
+            setNoMessaged(users.noMessaged)
+            setAlreadyMessaged(users.alreadyMessaged)
 
+        })
+        setLoading(false)
     }, [])
 
+
     useEffect(() => {
-       if(usersInfo.length > 0){
-        usersInfo.map(async (user, index) => {
-            let UID = user._id;
-            let limit = 50;
-            let messagesRequest = new CometChat.MessagesRequestBuilder()
-                .setUID(UID)
-                .setLimit(limit)
-                .build();
-
-            const messages = await messagesRequest.fetchPrevious()
-                    if (messages.length > 0) {
-                        let checkUser = alreadyMessaged.filter(sender => sender._id == user._id)
-                        if (checkUser.length == 0) {
-                            setAlreadyMessaged([...alreadyMessaged, user])
-                        }
-
-                    } else {
-                        let checkUser = noMessaged.filter(sender => sender._id == user._id)
-                        if (checkUser.length == 0) {
-                            setNoMessaged([...noMessaged, user])
-                        }
-
-                    }
+        setLoading(true)
+        getMatchs().then(users => {
+            setNoMessaged(users.noMessaged)
+            setAlreadyMessaged(users.alreadyMessaged)
 
         })
-        console.log("already ", alreadyMessaged)
-        console.log("no", noMessaged)
-       }
-      }, [setUsersInfo]);
+        setLoading(false)
 
-
-      
-//   useEffect(() => {
-//     if (isFocused) {
-//         getMatchs().then(users => {
-//             setUsersInfo(users)
-//             // setNoMessaged(users[1])
-//             // setAlreadyMessaged(users[2])
-//         })
-
-//     }
-//   }, [isFocused]);
+    }, [isFocused])
 
 
 
@@ -119,6 +84,7 @@ const Matchs = () => {
 
 
     const RenderTop = () => {
+
         if (loading) {
             <View style={tw`flex h-full w-full justify-center items-center`}>
                 <ActivityIndicator size={25} color="black" />
@@ -185,11 +151,9 @@ const Matchs = () => {
     )
 
 
+    if ((alreadyMessaged.length + noMessaged.length) > 0) {
 
 
-
-
-    if (usersInfo.length > 0) {
         return (
             <View style={tw`flex-1`}>
                 <View style={tw`flex h-35 justify-end`}>
@@ -208,14 +172,20 @@ const Matchs = () => {
             </View >
         )
     } else {
-        return (<NoMatchs />)
+        return (
+            <NoMatchs />
+        )
     }
+
+
+
+
+
 }
 
 
 const ItemTop = ({ item }) => {
     const navigation = useNavigation()
-    console.log("TOP")
     return (
         <TouchableOpacity key={item._id} style={tw`flex my-4 mx-2 w-40 h-45 self-center border rounded`} onPress={() => {
             navigation.navigate("MessagesScreen", { user: item })
@@ -236,9 +206,25 @@ const ItemTop = ({ item }) => {
 
 const ItemBottom = ({ item }) => {
     const navigation = useNavigation()
+    const [loading, setLoading] = useState(true)
     const [lastMessage, setLastMessage] = useState([])
-    console.log("BOTTOM")
     const username = `${item.fName} ${item.sName}`
+
+    function convertStringToDate(strTime) {
+		var date = new Date(strTime);
+		var day = date.getDate();
+		var month = date.getMonth()
+		var year = date.getFullYear().toString().substr(-2)
+		var hours = date.getHours();
+		var minutes = date.getMinutes();
+		var ampm = hours >= 12 ? "pm" : "am";
+		hours = hours % 12;
+		hours = hours ? hours : 12;
+		minutes = minutes < 10 ? "0" + minutes : minutes;
+		var timestr = `${hours}:${minutes} ${ampm}`
+		var datestr = `${day}/${month}/${year}`
+		return `${timestr} ${datestr}`
+	}
 
     function returnLastMessage(user) {
         let UID = user._id;
@@ -250,38 +236,20 @@ const ItemBottom = ({ item }) => {
 
         messagesRequest.fetchPrevious().then(
             messages => {
-
                 if (messages.length > 0) {
                     if (messages[messages.length - 1].sender.uid !== UID) {
-                        setLastMessage({ text: `Você disse ${messages[messages.length - 1].text}`, time: messages[messages.length - 1].sentAt, hasBlockedMe: messages[messages.length - 1].hasBlockedMe })
+                        setLastMessage({ text: `Você disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe })
                     } else {
-                        setLastMessage({ text: `${messages[messages.length - 1].sender.name} disse ${messages[messages.length - 1].text}`, time: messages[messages.length - 1].sentAt, hasBlockedMe: messages[messages.length - 1].hasBlockedMe })
+                        setLastMessage({ text: `${messages[messages.length - 1].sender.name} disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe })
                     }
                 }
-                console.log("BOT MESSAGES", lastMessage);
+                setLoading(false)
 
 
             }, error => {
                 setError(error)
             }
         );
-    }
-
-    function convertStringToDate(strTime) {
-        var timestamp = Number(strTime) * 1000;
-        var date = new Date(timestamp);
-        var day = date.getDate();
-        var month = date.getMonth()
-        var year = date.getFullYear().toString().substr(-2)
-        var hours = date.getHours();
-        var minutes = date.getMinutes();
-        var ampm = hours >= 12 ? "pm" : "am";
-        hours = hours % 12;
-        hours = hours ? hours : 12;
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        var timestr = `${hours}:${minutes} ${ampm}`
-        var datestr = `${day}/${month}/${year}`
-        return `${timestr} ${datestr}`
     }
 
 
@@ -291,7 +259,7 @@ const ItemBottom = ({ item }) => {
 
 
     return (
-        <ConversationItem user={item} lastMessage={lastMessage.text} time={convertStringToDate(lastMessage.time)} username={username} />
+        <ConversationItem loading={loading} user={item} lastMessage={lastMessage.text} time={lastMessage.time} username={username} />
     )
 
 }

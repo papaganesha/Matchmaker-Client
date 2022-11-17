@@ -1,8 +1,8 @@
-import { View, RadioButton, Text, Image, FlatList, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, ActivityIndicator, TouchableOpacity } from 'react-native'
 import React, { useContext, useState, useEffect } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import tw from 'twrnc';
-import { useNavigation, NavigationActions, StackActions } from '@react-navigation/native';
+import { useNavigation} from '@react-navigation/native';
 import axios from 'axios'
 import { BASE_URL } from '../config'
 import Icon from 'react-native-vector-icons/FontAwesome'

@@ -3,7 +3,6 @@ import { Text, View, StyleSheet, TouchableHighlight, ActivityIndicator } from 'r
 import RadioButton from '../components/RadioButton';
 import axios from 'axios'
 import tw from 'twrnc';
-import Icon from 'react-native-vector-icons/FontAwesome'
 import { AuthContext } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 

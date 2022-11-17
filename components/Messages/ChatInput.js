@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, memo } from "react";
+import React, { useState, useEffect, useRef, memo, useContext } from "react";
 import {
 	View,
 	Text,
@@ -10,26 +10,52 @@ import {
 
 import Animated, {
 	useSharedValue,
-	withSpring,
-	withTiming,
 	useAnimatedStyle,
 } from "react-native-reanimated";
 
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import EmojiPicker from "./emojis/EmojiPicker";
 
-import { useKeyboard } from "@react-native-community/hooks";
+import axios from 'axios'
+
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 
 import { CometChat } from '@cometchat-pro/react-native-chat';
 
 import { BASE_URL } from '../../config'
 
+import { AuthContext } from '../../context/AuthContext';
+
+
 
 const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConversation }) => {
 	const [message, setMessage] = useState("");
 	const height = useSharedValue(70);
+	const { userToken } = useContext(AuthContext)
 
+	const changeConversationInitiated = async (matchId) => {
+		const res = await axios.post(`${BASE_URL}conversationInitiliazed`, {
+			matchId
+		}, {
+			headers: {
+				'Authorization': `${userToken}`
+			}
+		})
+
+		const json = await res.data
+		console.log("JSON ",json)
+		if(json !== true){
+			const res2 = await axios.put(`${BASE_URL}conversationInitiliazed`, {
+				matchId,
+				conversationInitiated: true
+			}, {
+				headers: {
+					'Authorization': `${userToken}`
+				}
+			})
+		}
+
+
+	}
 
 	const sendMessage = (msg, receiverID) => {
 		if (msg.length > 0) {
@@ -39,6 +65,7 @@ const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConvers
 
 			CometChat.sendMessage(textMessage).then(
 				message => {
+					changeConversationInitiated(receiverID)
 					setMessage("")
 					returnAllConversation()
 				}, error => {
@@ -133,6 +160,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		flexDirection: "row",
 		paddingVertical: 10,
+		
 	},
 	inputAndMicrophone: {
 		flexDirection: "row",
@@ -143,6 +171,7 @@ const styles = StyleSheet.create({
 		borderRadius: 30,
 		alignItems: "center",
 		justifyContent: "space-between",
+		borderWidth: 1,
 	},
 	input: {
 		backgroundColor: "transparent",
@@ -152,6 +181,7 @@ const styles = StyleSheet.create({
 		fontSize: 15,
 		height: 50,
 		alignSelf: "center",
+
 	},
 	rightIconButtonStyle: {
 		justifyContent: "center",
