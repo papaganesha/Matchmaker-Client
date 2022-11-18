@@ -76,28 +76,26 @@ const alreadyRemoved = []
 const Advanced = () => {
   const navigation = useNavigation()
   const { userInfo, userToken } = useContext(AuthContext)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [usersInfo, setUsersInfo] = useState([])
 
 
-const getUsersInfo = () => {
-  setLoading(true)
-    axios.get(`${BASE_URL}users`, {
+  const getUsersInfo = async () => {
+
+    const res = await axios.get(`${BASE_URL}users`, {
       headers: {
         'Authorization': `${userToken}`
       }
-    }).then(res => {
-      setUsersInfo(res.data.data)
-      //console.log("aha, ", res.data.data)
     })
-      .catch(err => {
-        console.log("GET USERS ERROR: ", err)
-      })
-    setTimeout(()=>{setLoading(false)}, 4000)
-}
+    const json = await res.data.data
+    setLoading(false)
+    return json
+  }
 
   useEffect(() => {
-    getUsersInfo()
+    getUsersInfo().then(result => {
+      setUsersInfo(result)
+    })
   }, [])
 
 
@@ -126,7 +124,7 @@ const getUsersInfo = () => {
 
   }
 
-  
+
   const swiped = (direction, user) => {
     //console.log('removing: ' + nameToDelete + ' to the ' + direction)
     if (direction === 'right') {
@@ -140,11 +138,13 @@ const getUsersInfo = () => {
 
 
   const outOfFrame = (name) => {
+    alreadyRemoved.push(name)
     console.log(name + ' left the screen!')
-    console.log("u", usersInfo.length)
-    let usersInfoState = usersInfo.filter(user => user.fName !== name)
-    console.log("S", usersInfoState.length)
-    setUsersInfo(usersInfoState)
+    setUsersInfo((current) =>
+    current.filter((user) => user.fName != name)
+    );
+
+    console.log(alreadyRemoved)
   }
 
 
@@ -195,15 +195,15 @@ const getUsersInfo = () => {
           {usersInfo.length > 0 ? (
             usersInfo.map((user) =>
               <TinderCard key={user._id} onSwipe={(dir) => swiped(dir, user)} onCardLeftScreen={() => outOfFrame(user.fName)}>
-                <View style={[styles.card, tw`border rounded`]}>
+                <View style={[styles.card, tw` rounded-lg shadow-xl`]}>
                   <TouchableOpacity className="pressable" style={tw`w-full h-full`} onPress={() => { navigation.navigate("ProfileUserOnScreen", { user: user }) }}>
 
-                    <ImageBackground style={[tw`justify-end w-full h-full`]} source={user.mainPicture ? { uri: user.mainPicture } : require("../assets/placeholder1.jpg")}>
+                    <ImageBackground imageStyle={tw`rounded-lg `} style={[tw`justify-end w-full h-full`]} source={user.mainPicture ? { uri: user.mainPicture } : require("../assets/placeholder1.jpg")}>
 
-                      <View style={tw`w-full h-1/6 flex-row justify-center bg-black  bg-opacity-40`}>
+                      <View style={tw`w-full h-1/6 flex-row justify-center bg-black  bg-opacity-40 border-b-1 rounded-lg`}>
                         <View style={tw`flex w-3/4 justify-center`}>
-                          <Text style={tw`w-full text-white ml-5 text-2xl font-semibold`}>{`${user.fName} ${user.sName}, ${returnAge(user.birthDate)}`} </Text>
-                          <Text style={tw`w-full text-white ml-5`}>{`${returnGender(user.gender)} ${returnOrientation(user.sexOrientation)}`} </Text>
+                          <Text style={tw`w-full text-white ml-5 text-2xl font-bold`}>{`${user.fName} ${user.sName}, ${returnAge(user.birthDate)}`} </Text>
+                          <Text style={tw`w-full text-base text-white ml-5`}>{`${returnGender(user.gender)} ${returnOrientation(user.sexOrientation)}`} </Text>
                         </View>
                         <View style={tw`w-1/4  justify-center items-end`}>
                           <TouchableOpacity style={tw` p-4`} onPress={() => { navigation.navigate("ProfileUserOnScreen", { user: user }) }}>

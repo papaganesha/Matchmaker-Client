@@ -13,6 +13,7 @@ import Animated, {
 	useAnimatedStyle,
 } from "react-native-reanimated";
 
+import tw from 'twrnc';
 
 import axios from 'axios'
 
@@ -90,15 +91,15 @@ const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConvers
 	return (
 		<Animated.View style={[styles.container, heightAnimatedStyle]}>
 			{reply ? (
-				<View style={styles.replyContainer}>
+				<View style={tw`justify-center items-start mx-2 px-2 `}>
 					<TouchableOpacity
 						onPress={closeReply}
-						style={styles.closeReply}
+						style={tw`mt-1`}
 					>
 						<Icon name="close" color="#000" size={20} />
 					</TouchableOpacity>
 					<Text style={styles.title}>
-						Responder para {isLeft ? username : "VocÊ"}
+						Responder para {isLeft ? username : "Você"}
 					</Text>
 					<Text style={styles.reply}>{reply}</Text>
 				</View>
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
 		marginTop: 5,
 	},
 	innerContainer: {
-		paddingHorizontal: 10,
+		paddingHorizontal: 5,
 		marginHorizontal: 10,
 		justifyContent: "space-between",
 		alignItems: "center",
@@ -166,16 +167,16 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		backgroundColor: "white",
 		flex: 3,
-		marginRight: 10,
+		marginRight: 8,
 		paddingVertical: Platform.OS === "ios" ? 10 : 0,
-		borderRadius: 30,
+		borderRadius: 20,
 		alignItems: "center",
 		justifyContent: "space-between",
 		borderWidth: 1,
 	},
 	input: {
 		backgroundColor: "transparent",
-		paddingLeft: 20,
+		paddingLeft: 15,
 		color: "black",
 		flex: 3,
 		fontSize: 15,

@@ -57,16 +57,14 @@ const Matchs = () => {
     }, [])
 
 
-    useEffect(() => {
-        setLoading(true)
-        getMatchs().then(users => {
-            setNoMessaged(users.noMessaged)
-            setAlreadyMessaged(users.alreadyMessaged)
+    // useEffect(() => {
+    //     getMatchs().then(users => {
+    //         setNoMessaged(users.noMessaged)
+    //         setAlreadyMessaged(users.alreadyMessaged)
 
-        })
-        setLoading(false)
+    //     })
 
-    }, [isFocused])
+    // }, [isFocused])
 
 
 
@@ -97,7 +95,7 @@ const Matchs = () => {
                             style={tw` h-full pl-3 mr-4`}
                             data={noMessaged}
                             renderItem={renderItemTop}
-                            keyExtractor={item => item.id}
+                            keyExtractor={item => item._id}
                             horizontal={true}
                         />
                     </SafeAreaView>
@@ -126,7 +124,7 @@ const Matchs = () => {
                             style={tw` h-full pt-1 px-4`}
                             data={alreadyMessaged}
                             renderItem={renderItemBottom}
-                            keyExtractor={item => item.id}
+                            keyExtractor={item => item._id}
                             vertical={true}
                         />
                     </SafeAreaView>
@@ -187,13 +185,13 @@ const Matchs = () => {
 const ItemTop = ({ item }) => {
     const navigation = useNavigation()
     return (
-        <TouchableOpacity key={item._id} style={tw`flex my-4 mx-2 w-40 h-45 self-center border rounded`} onPress={() => {
+        <TouchableOpacity key={item._id} style={tw`flex my-4 mx-2 w-40 h-45 self-center border border-gray-400 rounded-lg shadow-xl`} onPress={() => {
             navigation.navigate("MessagesScreen", { user: item })
         }}>
 
-            <ImageBackground style={tw`flex w-full h-full self-center rounded justify-end items-end`} source={item.mainPicture ? { uri: item.mainPicture } : require("../assets/placeholder1.jpg")}>
-                <View style={tw`w-full h-10 bg-black opacity-75 items-center justify-center`}>
-                    <Text style={tw` text-white font-semibold`}>{`${item.fName} ${item.sName}, ${returnAge(item.birthDate)}`}</Text>
+            <ImageBackground imageStyle={tw`rounded-lg`} style={tw`flex w-full h-full self-center justify-end items-end`} source={item.mainPicture ? { uri: item.mainPicture } : require("../assets/placeholder1.jpg")}>
+                <View style={tw`w-full h-10 bg-black opacity-76 items-center justify-center border-b-1 rounded`}>
+                    <Text style={tw`text-base text-white font-semibold`}>{`${item.fName} ${item.sName}, ${returnAge(item.birthDate)}`}</Text>
                 </View>
             </ImageBackground>
         </TouchableOpacity>
@@ -202,64 +200,109 @@ const ItemTop = ({ item }) => {
 
 }
 
-
+let cont = 0
+let cont2 = 0
 
 const ItemBottom = ({ item }) => {
+    cont++
+    console.log("drip1", cont)
     const navigation = useNavigation()
     const [loading, setLoading] = useState(true)
     const [lastMessage, setLastMessage] = useState([])
+    const [unreadMessages, setUnread] = useState([])
+
     const username = `${item.fName} ${item.sName}`
 
-    function convertStringToDate(strTime) {
-		var date = new Date(strTime);
-		var day = date.getDate();
-		var month = date.getMonth()
-		var year = date.getFullYear().toString().substr(-2)
-		var hours = date.getHours();
-		var minutes = date.getMinutes();
-		var ampm = hours >= 12 ? "pm" : "am";
-		hours = hours % 12;
-		hours = hours ? hours : 12;
-		minutes = minutes < 10 ? "0" + minutes : minutes;
-		var timestr = `${hours}:${minutes} ${ampm}`
-		var datestr = `${day}/${month}/${year}`
-		return `${timestr} ${datestr}`
-	}
 
-    function returnLastMessage(user) {
+    
+    function convertStringToDate(strTime) {
+        console.log("drip2", cont2)
+        var timestamp = Number(strTime) * 1000;
+        var date = new Date(timestamp);
+        var day = date.getDate();
+        var month = date.getMonth()
+        var year = date.getFullYear().toString().substr(-2)
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? "pm" : "am";
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        var timestr = `${hours}:${minutes} ${ampm}`
+        var datestr = `${day}/${month}/${year}`
+        cont2++
+        return `${timestr} ${datestr}`
+    }
+
+    async function returnUnreadMessages(user){
+        let unreadMessages = []
         let UID = user._id;
-        let limit = 30;
+        let limit = 40;
+
+        let messagesUnread = new CometChat.MessagesRequestBuilder()
+            .setUID(UID)
+            .setUnread(true)
+            .setLimit(limit)
+            .build();
+
+        await messagesUnread.fetchPrevious().then(
+            messages => {
+                //console.log("Message list fetched:", messages[0]);
+                messages.map(message => {
+                    if(message.sender.uid === UID){
+                        unreadMessages.push(message.text)
+                    }
+                })
+            }, error => {
+                console.log("Message fetching failed with error:", error);
+            }
+        )
+        return unreadMessages
+
+    }
+
+    async function returnLastMessage(user) {
+        let data
+        let UID = user._id;
+        let limit = 60;
+
         let messagesRequest = new CometChat.MessagesRequestBuilder()
             .setUID(UID)
             .setLimit(limit)
             .build();
 
-        messagesRequest.fetchPrevious().then(
+        await messagesRequest.fetchPrevious().then(
             messages => {
                 if (messages.length > 0) {
                     if (messages[messages.length - 1].sender.uid !== UID) {
-                        setLastMessage({ text: `Você disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe })
+                        data = { text: `Você disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe}
                     } else {
-                        setLastMessage({ text: `${messages[messages.length - 1].sender.name} disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe })
+                        data = { text: `${messages[messages.length - 1].sender.name} disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe}
                     }
                 }
-                setLoading(false)
 
 
             }, error => {
                 setError(error)
             }
         );
+        return data
     }
 
 
     useEffect(() => {
-        returnLastMessage(item)
+        returnLastMessage(item).then(res => {
+            console.log("res", res)
+            setLastMessage(res)
+        })
+        returnUnreadMessages(item).then(res => {
+            setUnread(res)
+        })
     }, [])
 
 
     return (
-        <ConversationItem loading={loading} user={item} lastMessage={lastMessage.text} time={lastMessage.time} username={username} />
+        <ConversationItem user={item} lastMessage={lastMessage.text} time={lastMessage.time} username={username} unreadMessages={unreadMessages}/>
     )
 
 }

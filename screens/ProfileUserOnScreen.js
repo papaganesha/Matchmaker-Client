@@ -56,8 +56,8 @@ const ProfileUserOnScreen = ({route, navigation}) => {
     if (user.mainPicture) {
       const mainPicture = user.mainPicture
       return (
-        <View style={tw`flex w-full h-full rounded border`}>
-          <ImageBackground style={tw`flex w-full h-full rounded border`} source={mainPicture ? { uri: mainPicture } : require("../assets/placeholder1.jpg")} >
+        <View style={tw`flex w-full h-full rounded-lg`}>
+          <ImageBackground imageStyle={tw`rounded-lg`} style={tw`flex w-full h-full`} source={mainPicture ? { uri: mainPicture } : require("../assets/placeholder1.jpg")} >
           </ImageBackground>
         </View>
 
@@ -123,7 +123,7 @@ const ProfileUserOnScreen = ({route, navigation}) => {
   const RenderSummary = ({ summary }) => {
     return (
       <View style={tw`flex w-full h-48`}>
-        <Text style={tw`mt-3 ml-8 text-base font-bold`}>Sobre</Text>
+        <Text style={tw`mt-3 ml-8 text-base font-bold `}>Sobre</Text>
         <View style={tw` mx-8 rounded border h-30 px-3 pt-1 mt-3`}>
           <Text style={tw`mt-2 font-medium`}>{summary}</Text>
         </View>

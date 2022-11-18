@@ -13,13 +13,24 @@ import Animated, {
 	useSharedValue
 } from "react-native-reanimated";
 
+import { CometChat } from '@cometchat-pro/react-native-chat';
 
-const Message = ({ time, isLeft, message, onSwipe }) => {
+
+
+const Message = ({ messageId, senderId, time, isLeft, message, onSwipe }) => {
 	const startingPosition = 0;
 	const x = useSharedValue(startingPosition);
 
-	
-    const [date, setDate] = useState([])
+	const setReadMessages = (message) => {
+		console.log("mes", message)
+		CometChat.markAsRead(messageId, senderId, 'user', senderId).then(
+			() => {
+				console.log("mark as read success.");
+			}, error => {
+				console.log("An error occurred when marking the message as read.", error);
+			}
+		);
+	}
 
 	function convertStringToDate(strTime) {
 		var timestamp = Number(strTime) * 1000;
@@ -35,8 +46,8 @@ const Message = ({ time, isLeft, message, onSwipe }) => {
 		minutes = minutes < 10 ? "0" + minutes : minutes;
 		var timestr = `${hours}:${minutes} ${ampm}`
 		var datestr = `${day}/${month}/${year}`
-		setDate([datestr, timestr])
-		}
+		return `${timestr} ${datestr}`
+	}
 
 
 	const isOnLeft = (type) => {
@@ -80,9 +91,10 @@ const Message = ({ time, isLeft, message, onSwipe }) => {
 		}
 	});
 
-	useEffect(()=>{
+	useEffect(() => {
 		convertStringToDate(time)
-	},[])
+		setReadMessages(message)
+	}, [])
 
 	return (
 		<FlingGestureHandler
@@ -107,13 +119,10 @@ const Message = ({ time, isLeft, message, onSwipe }) => {
 						</Text>
 					</View>
 					<View style={styles.timeView}>
-						{date.length > 0 ? (
-							<Text style={[styles.time, isOnLeft("time")]}>
-							{date[1]} {date[0]}
+						<Text style={[styles.time, isOnLeft("time")]}>
+							{convertStringToDate(time)}
 						</Text>
-						) : (
-							<ActivityIndicator size={10} color="black" style={[styles.time, isOnLeft("time")]}/>
-						)}
+
 					</View>
 				</View>
 			</Animated.View>

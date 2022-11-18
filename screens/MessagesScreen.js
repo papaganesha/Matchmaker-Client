@@ -14,10 +14,9 @@ const MessagesScreen = ({ navigation, route }) => {
 	const { user } = route.params;
 	const [reply, setReply] = useState("");
 	const [isLeft, setIsLeft] = useState();
-	const [loading, setLoading]= useState(false)
 	const [messages, setMessages] = useState([])
-	const {userInfo, userToke, error, setError} = useContext(AuthContext)
 
+	
 	const createMsgListener = () => {
 		let listenerID = "GLOBAL_LISTENER_ID"
 	
@@ -51,9 +50,9 @@ const MessagesScreen = ({ navigation, route }) => {
 			messages => {
 				setMessages(messages)
 			}, error => {
-				setError(`Message fetching failed with error ${error}`)
+				console.log(`Message fetching failed with error ${error}`)
 			}
-		);
+		)
 	}
 
 

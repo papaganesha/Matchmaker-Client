@@ -1,8 +1,6 @@
-import { View, Text, Button, ScrollView, StyleSheet, Dimensions, Image, ImageBackground } from 'react-native'
-import { TouchableOpacity } from "react-native-gesture-handler"
-import React, { useContext, useEffect, useState } from 'react'
+import { View } from 'react-native'
+import React, { useContext, useEffect } from 'react'
 import tw from 'twrnc';
-import axios from 'axios'
 import { CometChat } from '@cometchat-pro/react-native-chat';
 import { useIsFocused } from "@react-navigation/core";
 
@@ -15,7 +13,6 @@ import Profile from './Profile'
 import Matchs from './Matchs';
 
 
-import { BASE_URL } from '../config'
 
 import { AuthContext } from '../context/AuthContext';
 
@@ -25,11 +22,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
-const SCREEN_HEIGHT = Dimensions.get('window').height
-
-//import SwipableCards from './SwipableCards'
-
-import Card from '../components/Card';
 
 import SwipableCards from './SwipableCards';
 
@@ -40,7 +32,7 @@ import Footer from '../components/Footer';
 function Homes() {
   return (
     <View style={styles.container}>
-    <SwipableCards/>
+      <SwipableCards />
     </View>
   )
 }
@@ -69,75 +61,75 @@ const Home = () => {
 
     //PARAMETROS DE CONFIGURAÇÃO PRÉDEFINIDOS
     const appSetting = new CometChat.AppSettingsBuilder()
-        .subscribePresenceForAllUsers()
-        .setRegion(region)
-        .build()
+      .subscribePresenceForAllUsers()
+      .setRegion(region)
+      .build()
 
     //INICIALIZANDO COMETCHAT COM OS PARAMETROS 
     CometChat.init(appID, appSetting).then(
-        () => {
-            console.log('Initialization completed successfully');
-            // You can now call login function.
-        },
-        (error) => {
-            console.log('Initialization failed with error:', error);
-            // Check the reason for error and take appropriate action.
-        },
+      () => {
+        console.log('Initialization completed successfully');
+        // You can now call login function.
+      },
+      (error) => {
+        console.log('Initialization failed with error:', error);
+        // Check the reason for error and take appropriate action.
+      },
     );
 
     //CRIA NOVO USUARIO COMETCHAT
     CometChat.createUser(newUser, authKey).then(
-        //CASO SUCESSO
-        user => {
-            if (!user) {
-              loginCometchat(UID, authKey)
+      //CASO SUCESSO
+      user => {
+        if (!user) {
+          loginCometchat(UID, authKey)
 
-            }
-
-        }, error => {
-            if (error.code == "ERR_UID_ALREADY_EXISTS") {
-              loginCometchat(UID, authKey)
-            }
         }
+
+      }, error => {
+        if (error.code == "ERR_UID_ALREADY_EXISTS") {
+          loginCometchat(UID, authKey)
+        }
+      }
     )
-}
+  }
 
   const loginCometchat = (UID, authKey) => {
     CometChat.login(UID, authKey).then(
       user => {
-          console.log('Login Successful:', { user })
-          createMsgListener()
-          // let GUID = "global"
-          // let password = ""
-          // let groupType = CometChat.GROUP_TYPE.PUBLIC
-          // CometChat.joinGroup(GUID, groupType, password).then(
-          //   group => {
-          //     console.log('Group joined successfully:', group)
-          //   }, error => {
-          //     console.log('Group joining failed with exception:', error)
+        console.log('Login Successful:', { user })
+        createMsgListener()
+        // let GUID = "global"
+        // let password = ""
+        // let groupType = CometChat.GROUP_TYPE.PUBLIC
+        // CometChat.joinGroup(GUID, groupType, password).then(
+        //   group => {
+        //     console.log('Group joined successfully:', group)
+        //   }, error => {
+        //     console.log('Group joining failed with exception:', error)
 
-          //   }
-          // )
+        //   }
+        // )
 
       }
       , error => {
-          console.log('Login failed with exception:', { error })
-          setError(error)
+        console.log('Login failed with exception:', { error })
+        setError(error)
       },
-  )
+    )
   }
 
   const logoutCometchat = (UID, authKey) => {
     CometChat.logout().then(
       () => {
-          console.log('Logout completed Successfully:', { user })
-          removeMsgListener()
+        console.log('Logout completed Successfully:', { user })
+        removeMsgListener()
       }
       , error => {
-          console.log('Logout failed with exception:', { error })
-          setError(error)
+        console.log('Logout failed with exception:', { error })
+        setError(error)
       },
-  )
+    )
   }
 
   const createMsgListener = () => {
@@ -147,16 +139,16 @@ const Home = () => {
       listenerID,
       new CometChat.MessageListener({
         onTextMessageReceived: textMessage => {
-          console.log("Text message received: ",textMessage)
+          console.log("Text message received: ", textMessage)
         },
         onMediaMessageReceived: mediaMessage => {
-          console.log("Media message received: ",mediaMessage)
+          console.log("Media message received: ", mediaMessage)
         },
         onCustomMessageReceived: customMessage => {
-          console.log("Custom message received: ",customMessage)
+          console.log("Custom message received: ", customMessage)
         }
       })
-      )
+    )
   }
 
   const removeMsgListener = () => {
@@ -167,16 +159,14 @@ const Home = () => {
   }
 
 
-
   useEffect(() => {
-    initializeCometchat()
     //refreshUserInfo()
+    initializeCometchat()
   }, [])
 
   useEffect(() => {
     if (isFocused) {
-      //initializeCometchat()
-      refreshUserInfo()
+      console.log("focado home")
     }
   }, [isFocused]);
 
@@ -185,7 +175,7 @@ const Home = () => {
 
   return (
     <View style={tw`flex-1 w-full h-full justify-center`}>
-      <Tab.Navigator screenOptions={{ headerShown: false, tabBarStyle: tw`h-16 justify-center pt-3`}}>
+      <Tab.Navigator screenOptions={{ headerShown: false, tabBarStyle: tw`h-16 justify-center pt-3` }}>
         <Tab.Screen
           name="Home"
           component={Homes}

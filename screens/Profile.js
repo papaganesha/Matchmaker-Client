@@ -314,7 +314,7 @@ const Profile = () => {
       const mainPicture = userInfo.mainPicture
       return (
         <View style={tw`flex w-full h-full rounded`}>
-          <ImageBackground style={tw`flex w-full h-full rounded border`} source={{ uri: mainPicture }} >
+          <ImageBackground imageStyle={tw`rounded-lg`} style={tw`flex w-full h-full`} source={{ uri: mainPicture }} >
             <View style={tw`flex w-full h-full rounded justify-end items-end`}>
               <TouchableOpacity
                 onPress={openImageLibraryAvatar}
@@ -428,7 +428,7 @@ const Profile = () => {
     return (
       <View style={tw`flex w-full h-48`}>
         <Text style={tw`mt-3 ml-8 text-base font-bold`}>Sobre</Text>
-        <View style={tw` mx-8 rounded border h-30 px-3 pt-1 mt-3`}>
+        <View style={tw` mx-8 rounded border h-30 px-3 pt-1 mt-3 `}>
           <EditableText
           style={tw`mt-2 font-medium`}
           text={summary}

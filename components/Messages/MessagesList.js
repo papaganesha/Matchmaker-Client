@@ -27,6 +27,8 @@ const MessagesList = ({ onSwipeToReply, user, messages }) => {
 			{messages.length > 0 ? messages.map((message, index) => (
 				<Message
 					key={index}
+					messageId={message.id}
+					senderId={message.sender.uid}
 					time={message.sentAt}
 					isLeft={message.sender.uid !== LoggedUser.current}
 					message={message.text}

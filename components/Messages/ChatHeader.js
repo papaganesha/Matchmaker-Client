@@ -8,9 +8,6 @@ const ChatHeader = ({ username, bio, picture, onlineStatus, onPress }) => {
 	const navigation = useNavigation();
 	return (
 		<View style={styles.container}>
-			<TouchableOpacity style={styles.backButton} onPress={onPress}>
-				<Icon name="angle-left" size={30} color={"white"} />
-			</TouchableOpacity>
 			<View style={styles.profileOptions}>
 				<TouchableOpacity style={styles.profile}  onPress={onPress}>
 					<Image style={styles.image} source={{ uri: picture }} />
@@ -47,10 +44,11 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		borderColor: "#fff",
 		flex: 4,
+		paddingHorizontal: 13
 	},
 	image: {
-		height: 65,
-		width: 65,
+		height: 55,
+		width: 55,
 		borderRadius: 32.5,
 	},
 	usernameAndOnlineStatus: {
@@ -60,7 +58,7 @@ const styles = StyleSheet.create({
 	},
 	username: {
 		color: "white",
-		fontSize: 18,
+		fontSize: 20,
 		fontWeight: "bold",
 	},
 	onlineStatus: {
