@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 		fontWeight: 'semibold'
 	},
 	notificationCircle: {
-		backgroundColor: "green",
+		backgroundColor: "red",
 		borderRadius: 50,
 		height: 20,
 		width: 20,
@@ -90,7 +90,7 @@ const ConversationItem = ({ user, lastMessage, time, username, returnLastMessage
 		<View style={tw`flex w-full `} key={user._id}>
 			<TouchableOpacity style={tw`flex flex-row pb-4 pr-4 pl-3 border border-gray-500 my-2 rounded`}
 				onPress={() => navigation.navigate('MessagesScreen', {
-					user: user
+					user: user,
 				})}>
 				<View style={[styles.imageContainer, tw`shadow-lg`]}>
 					<Image style={styles.image} source={user.mainPicture ? { uri: user.mainPicture } : require("../assets/placeholder1.jpg")} />

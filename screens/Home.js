@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import React, { useContext, useEffect } from 'react'
 import tw from 'twrnc';
 import { CometChat } from '@cometchat-pro/react-native-chat';
@@ -30,8 +30,13 @@ import Footer from '../components/Footer';
 
 
 function Homes() {
+  const { userInfo } = useContext(AuthContext)
   return (
     <View style={styles.container}>
+    <View style={tw`flex w-full justify-center items-center mb-8`}>
+    <Text style={tw`text-2xl font-semibold`}>Descubra</Text>
+    <Text style={tw`text-sm text-gray-500`}>{userInfo.city}</Text>
+    </View>
       <SwipableCards />
     </View>
   )

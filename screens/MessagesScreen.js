@@ -15,32 +15,32 @@ const MessagesScreen = ({ navigation, route }) => {
 	const [reply, setReply] = useState("");
 	const [isLeft, setIsLeft] = useState();
 	const [messages, setMessages] = useState([])
+	const { userInfo } = useContext(AuthContext)
 
-	
 	const createMsgListener = () => {
 		let listenerID = "GLOBAL_LISTENER_ID"
-	
+
 		CometChat.addMessageListener(
-		  listenerID,
-		  new CometChat.MessageListener({
-			onTextMessageReceived: textMessage => {
-			  console.log("Text message received: ",textMessage)
-			  returnAllConversation()
-			},
-			onMediaMessageReceived: mediaMessage => {
-			  console.log("Media message received: ",mediaMessage)
-			},
-			onCustomMessageReceived: customMessage => {
-			  console.log("Custom message received: ",customMessage)
-			}
-		  })
-		  )
-	  }
+			listenerID,
+			new CometChat.MessageListener({
+				onTextMessageReceived: textMessage => {
+					console.log("Text message received: ", textMessage)
+					returnAllConversation()
+				},
+				onMediaMessageReceived: mediaMessage => {
+					console.log("Media message received: ", mediaMessage)
+				},
+				onCustomMessageReceived: customMessage => {
+					console.log("Custom message received: ", customMessage)
+				}
+			})
+		)
+	}
 	
 
 	const returnAllConversation = () => {
 		let UID = user._id;
-		let limit = 30;
+		let limit = 100;
 		let messagesRequest = new CometChat.MessagesRequestBuilder()
 			.setUID(UID)
 			.setLimit(limit)
@@ -48,6 +48,7 @@ const MessagesScreen = ({ navigation, route }) => {
 
 		messagesRequest.fetchPrevious().then(
 			messages => {
+				console.log(messages[messages.length - 1])
 				setMessages(messages)
 			}, error => {
 				console.log(`Message fetching failed with error ${error}`)
@@ -64,26 +65,26 @@ const MessagesScreen = ({ navigation, route }) => {
 	const closeReply = () => {
 		setReply("");
 	};
-    
+
 	useEffect(() => {
 		returnAllConversation()
 		createMsgListener()
-	},[])
+	}, [])
 
 	return (
-			<View style={{ flex: 1 }}>
-				<ChatHeader
-					onPress={() => {navigation.navigate("ProfileUserOnScreen", {user: user})}}
-					username={`${user.fName} ${user.sName}`}
-					picture={user.mainPicture}
-					onlineStatus={'Online'}
-				/>
-				<MessagesList user={user} onSwipeToReply={swipeToReply} messages={messages}/>
-				<ChatInput reply={reply} isLeft={isLeft} closeReply={closeReply} username={`${user.fName} ${user.sName}`} user={user} returnAllConversation={returnAllConversation}/>
-			</View>
+		<View style={{ flex: 1 }}>
+			<ChatHeader
+				onPress={() => { navigation.navigate("ProfileUserOnScreen", { user: user }) }}
+				username={`${user.fName} ${user.sName}`}
+				picture={user.mainPicture}
+				onlineStatus={'Online'}
+			/>
+			<MessagesList user={user} onSwipeToReply={swipeToReply} messages={messages} returnAllConversation={returnAllConversation} />
+			<ChatInput reply={reply} isLeft={isLeft} closeReply={closeReply} username={`${user.fName} ${user.sName}`} user={user} returnAllConversation={returnAllConversation} />
+		</View>
 	);
 
-	
+
 };
 
 export default MessagesScreen;

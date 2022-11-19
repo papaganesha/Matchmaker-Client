@@ -46,36 +46,36 @@ const Matchs = () => {
 
     }
 
-    useEffect(() => {
-        setLoading(true)
-        getMatchs().then(users => {
-            setNoMessaged(users.noMessaged)
-            setAlreadyMessaged(users.alreadyMessaged)
-
-        })
-        setLoading(false)
-    }, [])
-
-
     // useEffect(() => {
+    //     setLoading(true)
     //     getMatchs().then(users => {
     //         setNoMessaged(users.noMessaged)
     //         setAlreadyMessaged(users.alreadyMessaged)
 
     //     })
+    //     setLoading(false)
+    // }, [])
 
-    // }, [isFocused])
+
+    useEffect(() => {
+        getMatchs().then(users => {
+            setNoMessaged(users.noMessaged)
+            setAlreadyMessaged(users.alreadyMessaged)
+
+        })
+
+    }, [isFocused])
 
 
 
     const renderItemTop = ({ item }) => {
         return (
-            <ItemTop item={item} />
+            <ItemTop item={item} getMatchs={getMatchs} />
         )
     }
 
     const renderItemBottom = ({ item }) => (
-        <ItemBottom item={item} />
+        <ItemBottom item={item} getMatchs={getMatchs} />
     );
 
 
@@ -84,7 +84,7 @@ const Matchs = () => {
     const RenderTop = () => {
 
         if (loading) {
-            <View style={tw`flex h-full w-full justify-center items-center`}>
+            <View style={tw`flex-1 h-full w-full justify-center items-center`}>
                 <ActivityIndicator size={25} color="black" />
             </View>
         } else {
@@ -148,10 +148,14 @@ const Matchs = () => {
         </View>
     )
 
-
+    if(loading){
+        return(
+            <View style={tw`flex-1 justify-center items-center`}>
+            <ActivityIndicator size={30} color="black"/>
+            </View>
+        )
+    }   
     if ((alreadyMessaged.length + noMessaged.length) > 0) {
-
-
         return (
             <View style={tw`flex-1`}>
                 <View style={tw`flex h-35 justify-end`}>
@@ -182,7 +186,7 @@ const Matchs = () => {
 }
 
 
-const ItemTop = ({ item }) => {
+const ItemTop = ({ item}) => {
     const navigation = useNavigation()
     return (
         <TouchableOpacity key={item._id} style={tw`flex my-4 mx-2 w-40 h-45 self-center border border-gray-400 rounded-lg shadow-xl`} onPress={() => {
@@ -190,7 +194,7 @@ const ItemTop = ({ item }) => {
         }}>
 
             <ImageBackground imageStyle={tw`rounded-lg`} style={tw`flex w-full h-full self-center justify-end items-end`} source={item.mainPicture ? { uri: item.mainPicture } : require("../assets/placeholder1.jpg")}>
-                <View style={tw`w-full h-10 bg-black opacity-76 items-center justify-center border-b-1 rounded`}>
+                <View style={tw`w-full h-10 bg-black opacity-76 items-center justify-center rounded`}>
                     <Text style={tw`text-base text-white font-semibold`}>{`${item.fName} ${item.sName}, ${returnAge(item.birthDate)}`}</Text>
                 </View>
             </ImageBackground>
@@ -200,12 +204,7 @@ const ItemTop = ({ item }) => {
 
 }
 
-let cont = 0
-let cont2 = 0
-
 const ItemBottom = ({ item }) => {
-    cont++
-    console.log("drip1", cont)
     const navigation = useNavigation()
     const [loading, setLoading] = useState(true)
     const [lastMessage, setLastMessage] = useState([])
@@ -216,7 +215,6 @@ const ItemBottom = ({ item }) => {
 
     
     function convertStringToDate(strTime) {
-        console.log("drip2", cont2)
         var timestamp = Number(strTime) * 1000;
         var date = new Date(timestamp);
         var day = date.getDate();
@@ -230,9 +228,10 @@ const ItemBottom = ({ item }) => {
         minutes = minutes < 10 ? "0" + minutes : minutes;
         var timestr = `${hours}:${minutes} ${ampm}`
         var datestr = `${day}/${month}/${year}`
-        cont2++
         return `${timestr} ${datestr}`
     }
+
+
 
     async function returnUnreadMessages(user){
         let unreadMessages = []
@@ -249,7 +248,8 @@ const ItemBottom = ({ item }) => {
             messages => {
                 //console.log("Message list fetched:", messages[0]);
                 messages.map(message => {
-                    if(message.sender.uid === UID){
+                    console.log(message.sender.uid, UID)
+                    if(message.sender.uid == UID){
                         unreadMessages.push(message.text)
                     }
                 })
@@ -292,7 +292,6 @@ const ItemBottom = ({ item }) => {
 
     useEffect(() => {
         returnLastMessage(item).then(res => {
-            console.log("res", res)
             setLastMessage(res)
         })
         returnUnreadMessages(item).then(res => {
@@ -300,9 +299,11 @@ const ItemBottom = ({ item }) => {
         })
     }, [])
 
+    
+
 
     return (
-        <ConversationItem user={item} lastMessage={lastMessage.text} time={lastMessage.time} username={username} unreadMessages={unreadMessages}/>
+        <ConversationItem user={item} lastMessage={lastMessage.text} time={lastMessage.time} username={username} unreadMessages={unreadMessages} />
     )
 
 }

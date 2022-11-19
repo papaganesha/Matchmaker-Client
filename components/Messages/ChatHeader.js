@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Icon from "@expo/vector-icons/FontAwesome";
 
 
 const ChatHeader = ({ username, bio, picture, onlineStatus, onPress }) => {

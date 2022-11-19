@@ -11,7 +11,12 @@ const MessagesList = ({ onSwipeToReply, user, messages }) => {
 	const { userInfo } = useContext(AuthContext)
 
 	const LoggedUser = useRef(userInfo._id);
-	const scrollView = useRef();
+	const scrollViewRef = useRef(null);
+
+	function scrollViewSizeChanged(height){
+		// y since we want to scroll vertically, use x and the width-value if you want to scroll horizontally
+		scrollViewRef.current?.scrollTo({y: height, animated: true}); 
+	 }
 
 	// useEffect(() => { 
 	// 	returnAllConversation() 
@@ -19,22 +24,25 @@ const MessagesList = ({ onSwipeToReply, user, messages }) => {
 
 	return (
 		<ScrollView style={{ backgroundColor: "white", flex: 1 }}
-			ref={ref => scrollView.current = ref}
-			onContentChange={() => {
-				scrollView.current.scrollToEnd({ animated: true })
-			}}
-		>
-			{messages.length > 0 ? messages.map((message, index) => (
-				<Message
+		ref={scrollViewRef} onContentSizeChange={(width,height) => {scrollViewSizeChanged(height)}}>
+			{messages.length > 0 ? messages.map((message, index) => {
+				return(
+					<Message
 					key={index}
 					messageId={message.id}
+					receiverId={message.receiver.uid}
 					senderId={message.sender.uid}
 					time={message.sentAt}
 					isLeft={message.sender.uid !== LoggedUser.current}
 					message={message.text}
 					onSwipe={onSwipeToReply}
+					deliveredAt={message.deliveredAt}
+					readAt={message.readAt}
 				/>
-			)):(
+				)
+			}
+				
+			):(
 				<View style={tw`w-full items-center h-24 justify-center`}> 
 					<Text  style={tw`px-8 py-2 text-base border border-gray-500 bg-gray-200 rounded`}>Mande a primeira mensagem</Text>
 				</View>

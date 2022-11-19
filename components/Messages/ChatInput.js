@@ -25,10 +25,11 @@ import { CometChat } from '@cometchat-pro/react-native-chat';
 import { BASE_URL } from '../../config'
 
 import { AuthContext } from '../../context/AuthContext';
+import { Message } from "@flyerhq/react-native-chat-ui";
 
 
 
-const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConversation }) => {
+const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConversation, refreshUnread }) => {
 	const [message, setMessage] = useState("");
 	const height = useSharedValue(70);
 	const { userToken } = useContext(AuthContext)
@@ -58,6 +59,18 @@ const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConvers
 
 	}
 
+
+	const setDeliveredMessages = (message) =>{
+		CometChat.markAsDelivered(message.id, message.receiver.uid, 'user', message.sender.uid).then(
+			() => {
+				console.log("mark as delivered success.");
+				returnAllConversation()
+			}, error => {
+				console.log("An error occurred when marking the message as delivered.", error);
+			}
+		);
+	}
+
 	const sendMessage = (msg, receiverID) => {
 		if (msg.length > 0) {
 			let trimmedMsg = msg.trim()
@@ -67,16 +80,19 @@ const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConvers
 			CometChat.sendMessage(textMessage).then(
 				message => {
 					changeConversationInitiated(receiverID)
+					//setDeliveredMessages(message)
 					setMessage("")
-					returnAllConversation()
+					returnAllConversation()	
 				}, error => {
 					console.log("Error while sent message: " + error.message)
 				})
 		}
+
+		
 	}
 
 	useEffect(() => {
-		returnAllConversation()
+		// returnAllConversation()
 	}, []);
 
 

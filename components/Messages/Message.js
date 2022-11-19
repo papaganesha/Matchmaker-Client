@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { useEffect } from "react";
 import { View, Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import {
@@ -14,23 +14,36 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { CometChat } from '@cometchat-pro/react-native-chat';
+import Icon from 'react-native-vector-icons/FontAwesome'
+
+import tw from 'twrnc';
+import { AuthContext } from "../../context/AuthContext";
 
 
-
-const Message = ({ messageId, senderId, time, isLeft, message, onSwipe }) => {
+const Message = ({ messageId, senderId, receiverId, time, isLeft, message, onSwipe, deliveredAt, readAt }) => {
 	const startingPosition = 0;
 	const x = useSharedValue(startingPosition);
+	const { userInfo } = useContext(AuthContext)
 
-	const setReadMessages = (message) => {
-		console.log("mes", message)
-		CometChat.markAsRead(messageId, senderId, 'user', senderId).then(
-			() => {
-				console.log("mark as read success.");
-			}, error => {
-				console.log("An error occurred when marking the message as read.", error);
-			}
-		);
+	const setReadMessages = () => {
+			CometChat.markAsRead(messageId, receiverId, 'user', senderId).then(
+				() => {
+					console.log("mark as read success. ")
+				}, error => {
+					console.log("An error occurred when marking the message as read.", error)
+				}
+			)
 	}
+
+	// const setDeliveredMessages = () =>{
+	// 	CometChat.markAsDelivered(messageId, receiverId, 'user', senderId).then(
+	// 		() => {
+	// 			console.log("mark as delivered success.");
+	// 		}, error => {
+	// 			console.log("An error occurred when marking the message as delivered.", error);
+	// 		}
+	// 	);
+	// }
 
 	function convertStringToDate(strTime) {
 		var timestamp = Number(strTime) * 1000;
@@ -49,6 +62,48 @@ const Message = ({ messageId, senderId, time, isLeft, message, onSwipe }) => {
 		return `${timestr} ${datestr}`
 	}
 
+
+	const ShowDelivereadAndRead = () => {
+		//console.log(deliveredAt, readAt)
+		if (readAt !== undefined) {
+			return (
+				<View style={tw`flex w-5 h-5 flex-row justify-end items-end ml-2`}>
+					<Icon name="check" color="black" size={12} />
+					<Icon name="check" color="red" size={12} />
+				</View>
+			);
+		}
+		else if (deliveredAt !== undefined && readAt !== undefined) {
+			return (
+				<View style={tw`flex w-5 h-5 flex-row justify-end items-end ml-2`}>
+					<Icon name="check" color="red" size={12} />
+					<Icon name="check" color="red" size={12} />
+				</View>
+			);
+		} else if (deliveredAt == undefined && readAt !== undefined) {
+			return (
+				<View style={tw`flex w-5 h-5 flex-row justify-end items-end ml-2`}>
+					<Icon name="check" color="black" size={12} />
+					<Icon name="check" color="red" size={12} />
+				</View>
+			);
+		} else if (deliveredAt !== undefined && readAt == undefined) {
+			return (
+				<View style={tw`flex w-5 h-5 flex-row justify-end items-end ml-2`}>
+					<Icon name="check" color="red" size={12} />
+					<Icon name="check" color="black" size={12} />
+				</View>
+			);
+		} else if (deliveredAt !== undefined) {
+			return (
+				<View style={tw`flex w-5 h-5 flex-row justify-end items-end ml-2`}>
+					<Icon name="check" color="red" size={12} />
+					<Icon name="check" color="black" size={12} />
+				</View>
+			);
+		}
+
+	};
 
 	const isOnLeft = (type) => {
 		if (isLeft && type === "messageContainer") {
@@ -93,7 +148,9 @@ const Message = ({ messageId, senderId, time, isLeft, message, onSwipe }) => {
 
 	useEffect(() => {
 		convertStringToDate(time)
-		setReadMessages(message)
+		setReadMessages()
+		
+		//setDeliveredMessages()
 	}, [])
 
 	return (
@@ -122,8 +179,8 @@ const Message = ({ messageId, senderId, time, isLeft, message, onSwipe }) => {
 						<Text style={[styles.time, isOnLeft("time")]}>
 							{convertStringToDate(time)}
 						</Text>
-
 					</View>
+
 				</View>
 			</Animated.View>
 		</FlingGestureHandler>
