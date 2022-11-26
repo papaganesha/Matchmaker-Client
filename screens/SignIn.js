@@ -1,11 +1,8 @@
-import { Button, View, Text, TextInput, ActivityIndicator, Image, KeyboardAvoidingView, ScrollView, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import {  View, Text, TextInput, ActivityIndicator, Image, TouchableOpacity} from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { AuthContext } from '../context/AuthContext';
 import tw from 'twrnc';
-import { useForm } from 'react-hook-form'
-import axios from 'axios'
-import SignUpNameAndCity from './SignUpNameAndCity'
 
 
 const TextField = ({ label, ...inputProps }) => {
@@ -14,7 +11,7 @@ const TextField = ({ label, ...inputProps }) => {
   return (
     <View style={tw`w-full justify-center items-center mt-4`}>
       <Text style={tw`w-full pl-8 font-semibold text-base`}>{label}</Text>
-      <TextInput style={tw`my-2 border w-5/6 py-2 rounded bg-white px-2`}
+      <TextInput style={tw`my-2 border w-5/6 py-2 rounded bg-white px-3 shadow-lg`}
         {...inputProps}
         onFocus={(e) => setFocused(true)}
         onBlur={(e) => setFocused(false)}
@@ -22,9 +19,6 @@ const TextField = ({ label, ...inputProps }) => {
     </View>
   )
 }
-
-
-
 
 
 const SignIn = () => {
@@ -37,17 +31,32 @@ const SignIn = () => {
     setError("")
   },[])
 
+
+
+
+  const RenderButton = () => {
+    if(isLoading){
+      return(
+        <ActivityIndicator size={15} color="#FFF" />
+      )
+    }else{
+      return(
+        <Text  style={tw`text-white font-semibold`} >Entrar</Text>
+      )
+    }
+  }
+
   if (!userToken) {
     return (
       <View
         style={tw`flex-1 w-full h-full bg-white`}
       >
-        <View style={tw`flex w-full h-4/12 items-center justify-center pt-5 `}>
+        <View style={tw`flex w-full h-4/12 items-center justify-center`}>
           <Image style={tw`w-3/6 h-4/6`} source={require('../assets/logo.png')} />
         </View>
         <View style={tw`flex w-full h-full items-center bg-gray-200 rounded-3xl`}>
-          <Text style={tw`pt-4 text-3xl font-bold text-black text-center mt-6 mb-2`}>Entrar</Text>
-          {!!error && <Text style={tw`flex w-82 mt-4 mb-3 text-center text-base font-semibold border rounded p-1`}>{error}</Text>}
+          <Text style={tw`pt-4 text-3xl font-bold text-black text-center mt-2 mb-2`}>Entrar</Text>
+          {!!error && <Text style={tw`flex w-82 mt-3 mb-2 text-center text-base font-semibold border rounded-lg p-1`}>{error}</Text>}
           <TextField
             label={'Email'}
             value={email}
@@ -70,19 +79,16 @@ const SignIn = () => {
           </View>
 
           {/*DIV/COM FUNÇÃO DE BOTÃO/REALIZAR LOGIN*/}
-          <View
-            style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-12`}
-            onStartShouldSetResponder={() => {
+          <TouchableOpacity
+            style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-lg mt-10 shadow-lg`}
+            onPress={() => {
               login(email, password)
+
             }}
             >
-            {isLoading ? (
-              <ActivityIndicator size="small" color="#FFF" />
-            ) : (
-              <Text  style={tw`text-white`} >Entrar</Text>
-            )}
+            <RenderButton/>
 
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     )

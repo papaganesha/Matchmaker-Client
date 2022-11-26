@@ -17,7 +17,7 @@ import tw from 'twrnc';
 
 import axios from 'axios'
 
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 
 import { CometChat } from '@cometchat-pro/react-native-chat';
@@ -44,7 +44,7 @@ const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConvers
 		})
 
 		const json = await res.data
-		console.log("JSON ",json)
+		//console.log("JSON ",json)
 		if(json !== true){
 			const res2 = await axios.put(`${BASE_URL}conversationInitiliazed`, {
 				matchId,
@@ -83,6 +83,7 @@ const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConvers
 					//setDeliveredMessages(message)
 					setMessage("")
 					returnAllConversation()	
+					refreshUnread()
 				}, error => {
 					console.log("Error while sent message: " + error.message)
 				})
@@ -171,13 +172,14 @@ const styles = StyleSheet.create({
 		marginTop: 5,
 	},
 	innerContainer: {
-		paddingHorizontal: 5,
-		marginHorizontal: 10,
+		paddingHorizontal: 10,
 		justifyContent: "space-between",
 		alignItems: "center",
 		flexDirection: "row",
 		paddingVertical: 10,
-		
+		borderWidth:2,
+		borderColor:"#DC2626",
+		borderRadius: 7,
 	},
 	inputAndMicrophone: {
 		flexDirection: "row",
@@ -186,9 +188,10 @@ const styles = StyleSheet.create({
 		marginRight: 8,
 		paddingVertical: Platform.OS === "ios" ? 10 : 0,
 		borderRadius: 20,
+		borderColor:"#DC2626",
 		alignItems: "center",
 		justifyContent: "space-between",
-		borderWidth: 1,
+		borderWidth: 2,
 	},
 	input: {
 		backgroundColor: "transparent",
@@ -247,7 +250,7 @@ const styles = StyleSheet.create({
 		paddingTop: 20,
 	},
 	sendButton: {
-		backgroundColor: "green",
+		backgroundColor: "#DC2626",
 		borderRadius: 50,
 		height: 50,
 		width: 50,

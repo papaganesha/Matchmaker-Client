@@ -46,27 +46,14 @@ const Matchs = () => {
 
     }
 
-    // useEffect(() => {
-    //     setLoading(true)
-    //     getMatchs().then(users => {
-    //         setNoMessaged(users.noMessaged)
-    //         setAlreadyMessaged(users.alreadyMessaged)
-
-    //     })
-    //     setLoading(false)
-    // }, [])
-
-
     useEffect(() => {
+        setError("")
         getMatchs().then(users => {
             setNoMessaged(users.noMessaged)
             setAlreadyMessaged(users.alreadyMessaged)
-
         })
-
     }, [isFocused])
-
-
+    
 
     const renderItemTop = ({ item }) => {
         return (
@@ -78,9 +65,6 @@ const Matchs = () => {
         <ItemBottom item={item} getMatchs={getMatchs} />
     );
 
-
-
-
     const RenderTop = () => {
 
         if (loading) {
@@ -90,7 +74,7 @@ const Matchs = () => {
         } else {
             if (noMessaged.length > 0) {
                 return (
-                    <SafeAreaView style={tw`flex h-3/10  justify-center items-center flex-row`}>
+                    <SafeAreaView style={tw`flex h-50  justify-center items-center flex-row`}>
                         <FlatList
                             style={tw` h-full pl-3 mr-4`}
                             data={noMessaged}
@@ -147,20 +131,21 @@ const Matchs = () => {
             <Text style={tw`text-base font-bold text-black`}>Encontre novos matchs</Text>
         </View>
     )
+    
 
-    if(loading){
-        return(
+    if (loading) {
+        return (
             <View style={tw`flex-1 justify-center items-center`}>
-            <ActivityIndicator size={30} color="black"/>
+                <ActivityIndicator size={30} color="black" />
             </View>
         )
-    }   
+    }
     if ((alreadyMessaged.length + noMessaged.length) > 0) {
         return (
             <View style={tw`flex-1`}>
-                <View style={tw`flex h-35 justify-end`}>
+                <View style={tw`flex h-20 mt-7 `}>
                     <Text style={tw`text-black text-3xl font-bold pl-5`}>Matchs</Text>
-                    <Text style={tw`text-black text-lg font-bold pl-5 pt-2`}>Converse com estes Matchs</Text>
+                    <Text style={tw`text-black text-lg font-bold pl-5 pt-1`}>Converse com estes Matchs</Text>
                 </View>
                 <RenderTop />
                 {!!error && <Text style={tw`flex w-85 mt-7 mb-2 text-center text-base font-semibold border rounded p-1 self-center`}>{error.code}: {error.message}</Text>}
@@ -186,7 +171,7 @@ const Matchs = () => {
 }
 
 
-const ItemTop = ({ item}) => {
+const ItemTop = ({ item }) => {
     const navigation = useNavigation()
     return (
         <TouchableOpacity key={item._id} style={tw`flex my-4 mx-2 w-40 h-45 self-center border border-gray-400 rounded-lg shadow-xl`} onPress={() => {
@@ -194,7 +179,7 @@ const ItemTop = ({ item}) => {
         }}>
 
             <ImageBackground imageStyle={tw`rounded-lg`} style={tw`flex w-full h-full self-center justify-end items-end`} source={item.mainPicture ? { uri: item.mainPicture } : require("../assets/placeholder1.jpg")}>
-                <View style={tw`w-full h-10 bg-black opacity-76 items-center justify-center rounded`}>
+                <View style={tw`w-full h-10 bg-red-600 opacity-80 items-center justify-center rounded`}>
                     <Text style={tw`text-base text-white font-semibold`}>{`${item.fName} ${item.sName}, ${returnAge(item.birthDate)}`}</Text>
                 </View>
             </ImageBackground>
@@ -209,11 +194,10 @@ const ItemBottom = ({ item }) => {
     const [loading, setLoading] = useState(true)
     const [lastMessage, setLastMessage] = useState([])
     const [unreadMessages, setUnread] = useState([])
-
     const username = `${item.fName} ${item.sName}`
 
 
-    
+
     function convertStringToDate(strTime) {
         var timestamp = Number(strTime) * 1000;
         var date = new Date(timestamp);
@@ -231,9 +215,7 @@ const ItemBottom = ({ item }) => {
         return `${timestr} ${datestr}`
     }
 
-
-
-    async function returnUnreadMessages(user){
+    async function returnUnreadMessages(user) {
         let unreadMessages = []
         let UID = user._id;
         let limit = 40;
@@ -248,8 +230,8 @@ const ItemBottom = ({ item }) => {
             messages => {
                 //console.log("Message list fetched:", messages[0]);
                 messages.map(message => {
-                    console.log(message.sender.uid, UID)
-                    if(message.sender.uid == UID){
+                    //console.log(message.sender.uid, UID)
+                    if (message.sender.uid == UID) {
                         unreadMessages.push(message.text)
                     }
                 })
@@ -273,17 +255,20 @@ const ItemBottom = ({ item }) => {
 
         await messagesRequest.fetchPrevious().then(
             messages => {
+                //console.log("Message fetch",messages)
                 if (messages.length > 0) {
                     if (messages[messages.length - 1].sender.uid !== UID) {
-                        data = { text: `Você disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe}
+                        console.log("AA",messages[messages.length - 1].text)
+                        data = { text: `Você disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe }
                     } else {
-                        data = { text: `${messages[messages.length - 1].sender.name} disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe}
+                        console.log("AA",messages[messages.length - 1].text)
+                        data = { text: `${messages[messages.length - 1].sender.name} disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe }
                     }
                 }
 
 
             }, error => {
-                setError(error)
+                console.log(error)
             }
         );
         return data
@@ -297,13 +282,12 @@ const ItemBottom = ({ item }) => {
         returnUnreadMessages(item).then(res => {
             setUnread(res)
         })
+        setLoading(false)
     }, [])
-
-    
 
 
     return (
-        <ConversationItem user={item} lastMessage={lastMessage.text} time={lastMessage.time} username={username} unreadMessages={unreadMessages} />
+        <ConversationItem user={item} loading={loading} lastMessage={lastMessage.text} time={lastMessage.time} username={username} unreadMessages={unreadMessages} />
     )
 
 }

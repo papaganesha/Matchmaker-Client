@@ -1,13 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState} from "react";
 import { useEffect } from "react";
-import { View, Text, ActivityIndicator } from "react-native";
+import { View} from "react-native";
 
 import ChatHeader from "../components/Messages/ChatHeader";
 import ChatInput from "../components/Messages/ChatInput";
 import MessagesList from "../components/Messages/MessagesList";
 
 import { CometChat } from '@cometchat-pro/react-native-chat';
-import { AuthContext } from "../context/AuthContext";
 
 
 const MessagesScreen = ({ navigation, route }) => {
@@ -15,7 +14,6 @@ const MessagesScreen = ({ navigation, route }) => {
 	const [reply, setReply] = useState("");
 	const [isLeft, setIsLeft] = useState();
 	const [messages, setMessages] = useState([])
-	const { userInfo } = useContext(AuthContext)
 
 	const createMsgListener = () => {
 		let listenerID = "GLOBAL_LISTENER_ID"
@@ -24,8 +22,10 @@ const MessagesScreen = ({ navigation, route }) => {
 			listenerID,
 			new CometChat.MessageListener({
 				onTextMessageReceived: textMessage => {
-					console.log("Text message received: ", textMessage)
+					console.log("Text message received: ", textMessage.text)
 					returnAllConversation()
+					refreshUnread()
+
 				},
 				onMediaMessageReceived: mediaMessage => {
 					console.log("Media message received: ", mediaMessage)
@@ -48,7 +48,7 @@ const MessagesScreen = ({ navigation, route }) => {
 
 		messagesRequest.fetchPrevious().then(
 			messages => {
-				console.log(messages[messages.length - 1])
+				//console.log(messages[messages.length - 1])
 				setMessages(messages)
 			}, error => {
 				console.log(`Message fetching failed with error ${error}`)

@@ -46,6 +46,57 @@ const SignUpInterests = () => {
   const [selecteds, setSelecteds] = useState([]);
   const [loading, setLoading] = useState(false);
 
+
+  const initializeCometchat = () => {
+    //VARIAVEIS AMBIENTE DA APLICAÇÃO
+    const appID = '22640333e5949db3';
+    const region = 'us';
+    const authKey = '5742c0b19492637494d0242f131b5964f5cba46a';
+
+    //NOME COMPLETO E ID DO USUARIO
+    const UID = userInfo._id;
+    const name = `${userInfo.fName} ${userInfo.sName}`
+
+    //CRIANDO INSTANCIA DE NOVO USUARIO COM UID
+    let newUser = new CometChat.User(UID);
+    //SETANDO O NOME DA INSTANCIA DE NOVO USUARIO
+    newUser.setName(name);
+
+    //PARAMETROS DE CONFIGURAÇÃO PRÉDEFINIDOS
+    const appSetting = new CometChat.AppSettingsBuilder()
+      .subscribePresenceForAllUsers()
+      .setRegion(region)
+      .build()
+
+    //INICIALIZANDO COMETCHAT COM OS PARAMETROS 
+    CometChat.init(appID, appSetting).then(
+      () => {
+        console.log('Initialization completed successfully');
+        // You can now call login function.
+      },
+      (error) => {
+        console.log('Initialization failed with error:', error);
+        // Check the reason for error and take appropriate action.
+      },
+    );
+
+    //CRIA NOVO USUARIO COMETCHAT
+    CometChat.createUser(newUser, authKey).then(
+      //CASO SUCESSO
+      user => {
+        if (!user) {
+          console.log("Usuario Cometchat criado com sucesso")
+
+        }
+
+      }, error => {
+        if (error.code == "ERR_UID_ALREADY_EXISTS") {
+          console.log(error.code)
+        }
+      }
+    )
+  }
+
   // ADICIONA E REMOVE ID DOS INTERESSES
   // 
   const handleSelected = (selected) => {
@@ -99,7 +150,8 @@ const SignUpInterests = () => {
           })
             .then(res => {
               if (res.data.success) {
-                console.log("FOI PRA HOME")
+                //CRIA USUARIO NO COMETCHAT
+                initializeCometchat()
                 refreshUserInfo()
               }
             })
@@ -132,9 +184,9 @@ const SignUpInterests = () => {
         <Text style={tw`font-bold text-sm text-center mt-4 mx-5`} >Selecione alguns de seus interesses e deixe todo mundo saber pelo que você é apaixonado.</Text>
       </View>
       
-      {!!error && <Text style={tw`flex w-85 mt-8 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text>}
+      {!!error && <Text style={tw`flex w-85 mt-5 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text>}
 
-      <View style={tw`flex flex-row w-full h-3/6 flex-wrap justify-center  mt-8 mb-6`}>
+      <View style={tw`flex flex-row w-full h-3/6 flex-wrap justify-center  mt-6 mb-6`}>
         {interestsList.map(item => {
           //SETA A COR DE FUNDO E DA LETRA DE ACORDO COM O ESTADO, VERIFICA SE ITEM.ID ESTA NOS SELECIONADOS OU NAO
           const backgroundColor = selecteds.indexOf(item.id) !== -1 ? "red" : "white";
@@ -152,7 +204,7 @@ const SignUpInterests = () => {
 
       <View style={tw`flex w-full h-full justify-start items-center `}>
         <View
-          style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl `}
+          style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-lg shadow-lg`}
           onStartShouldSetResponder={() => {
             uploadInterests()
           }}

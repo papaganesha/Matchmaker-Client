@@ -109,16 +109,16 @@ const Message = ({ messageId, senderId, receiverId, time, isLeft, message, onSwi
 		if (isLeft && type === "messageContainer") {
 			return {
 				alignSelf: "flex-start",
-				backgroundColor: "#f0f0f0",
+				backgroundColor: "#DC2626",
 				borderTopLeftRadius: 0,
 			};
 		} else if (isLeft && type === "message") {
 			return {
-				color: "#000",
+				color: "white",
 			};
 		} else if (isLeft && type === "time") {
 			return {
-				color: "gray",
+				color: "white",
 				fontWeight: "bold"
 			};
 		} else {
@@ -153,38 +153,40 @@ const Message = ({ messageId, senderId, receiverId, time, isLeft, message, onSwi
 		//setDeliveredMessages()
 	}, [])
 
-	return (
-		<FlingGestureHandler
-			direction={isLeft ? Directions.RIGHT : Directions.LEFT}
-			onGestureEvent={eventHandler}
-			onHandlerStateChange={({ nativeEvent }) => {
-				if (nativeEvent.state === State.ACTIVE) {
-					onSwipe(message, isLeft);
-				}
-			}}
-		>
-			<Animated.View style={[styles.container, uas]}>
-				<View
-					style={[
-						styles.messageContainer,
-						isOnLeft("messageContainer"),
-					]}
-				>
-					<View style={styles.messageView}>
-						<Text style={[styles.message, isOnLeft("message")]}>
-							{message}
-						</Text>
+	if(message != undefined){
+		return (
+			<FlingGestureHandler
+				direction={isLeft ? Directions.RIGHT : Directions.LEFT}
+				onGestureEvent={eventHandler}
+				onHandlerStateChange={({ nativeEvent }) => {
+					if (nativeEvent.state === State.ACTIVE) {
+						onSwipe(message, isLeft);
+					}
+				}}
+			>
+				<Animated.View style={[styles.container, uas]}>
+					<View
+						style={[
+							styles.messageContainer,
+							isOnLeft("messageContainer"),
+						]}
+					>
+						<View style={styles.messageView}>
+							<Text style={[styles.message, isOnLeft("message")]}>
+								{message}
+							</Text>
+						</View>
+						<View style={styles.timeView}>
+							<Text style={[styles.time, isOnLeft("time")]}>
+								{convertStringToDate(time)}
+							</Text>
+						</View>
+	
 					</View>
-					<View style={styles.timeView}>
-						<Text style={[styles.time, isOnLeft("time")]}>
-							{convertStringToDate(time)}
-						</Text>
-					</View>
-
-				</View>
-			</Animated.View>
-		</FlingGestureHandler>
-	);
+				</Animated.View>
+			</FlingGestureHandler>
+		);
+	}
 };
 
 const styles = StyleSheet.create({
@@ -193,7 +195,7 @@ const styles = StyleSheet.create({
 		marginVertical: 5,
 	},
 	messageContainer: {
-		backgroundColor: "#f0f0f0",
+		backgroundColor: "#DC2626",
 		maxWidth: "80%",
 		alignSelf: "flex-end",
 		flexDirection: "row",
@@ -213,14 +215,14 @@ const styles = StyleSheet.create({
 		paddingLeft: 10,
 	},
 	message: {
-		color: "black",
+		color: "white",
 		alignSelf: "flex-start",
 		fontSize: 16,
 		fontWeight: "semibold"
 
 	},
 	time: {
-		color: "gray",
+		color: "white",
 		alignSelf: "flex-end",
 		fontSize: 10,
 		fontWeight: "bold"

@@ -49,9 +49,11 @@ const styles = StyleSheet.create({
 		color: "black",
 		fontWeight: 'semibold'
 	},
-	notificationCircle: {
+	notificationCircle: { 
 		backgroundColor: "red",
 		borderRadius: 50,
+		borderWidth: 2, 
+		borderColor:"white",
 		height: 20,
 		width: 20,
 		alignItems: 'center',
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
 
 
 
-const ConversationItem = ({ user, lastMessage, time, username, returnLastMessage, unreadMessages }) => {
+const ConversationItem = ({ user, lastMessage, time, username, returnLastMessage, unreadMessages, loading }) => {
 	const navigation = useNavigation();
 
 	const showNotification = (type) => {
@@ -88,7 +90,7 @@ const ConversationItem = ({ user, lastMessage, time, username, returnLastMessage
 
 	return (
 		<View style={tw`flex w-full `} key={user._id}>
-			<TouchableOpacity style={tw`flex flex-row pb-4 pr-4 pl-3 border border-gray-500 my-2 rounded`}
+			<TouchableOpacity style={tw`flex flex-row pb-4 pr-4 pl-3 border border-white my-2 rounded-lg bg-red-600`}
 				onPress={() => navigation.navigate('MessagesScreen', {
 					user: user,
 				})}>
@@ -97,11 +99,11 @@ const ConversationItem = ({ user, lastMessage, time, username, returnLastMessage
 				</View>
 				<View style={tw`flex-1 justify-center`}>
 					<View style={tw`flex flex-row justify-between`}>
-						<Text numerOfLine={1} style={tw`mt-4 text-lg text-black w-40 font-semibold`}>{username}</Text>
+						<Text numerOfLine={1} style={tw`mt-4 text-lg text-white w-40 font-semibold`}>{username}</Text>
 						{time ? (
-							<Text style={tw`mt-6 text-xs text-black font-semibold`}>{time}</Text>
+							<Text style={tw`mt-6 text-xs text-white font-semibold`}>{time}</Text>
 						) : (
-							<ActivityIndicator size={15} color="black" style={tw`mt-6`}/>
+							<ActivityIndicator size={15} color="white" style={tw`mt-6`}/>
 						)}
 
 					</View>
@@ -109,14 +111,16 @@ const ConversationItem = ({ user, lastMessage, time, username, returnLastMessage
 						
 						<View style={tw`flex w-3/4`}>
 						{lastMessage ? (
-							<Text style={tw`text-black text-sm w-full mb-1`}>{lastMessage}</Text>
+							<Text style={tw`text-white text-sm w-full mb-1`}>{lastMessage}</Text>
 						) : (
-							<ActivityIndicator size={15} color="black" style={tw`mt-2`}/>
+							<ActivityIndicator size={15} color="white" style={tw`mt-2`}/>		
 						)}
 						</View>
 
 						<View style={tw`flex w-1/4 items-end`}>
-						{showNotification('number')}
+						{!loading ? (showNotification('number')) : (
+							<ActivityIndicator size={15} color="white" style={tw`mt-2`}/>
+						)}
 						</View>
 
 

@@ -1,8 +1,7 @@
-import { View, Text, ImageBackground, BackHandler, onStartShouldSetResponder  } from 'react-native'
+import { View, Text, BackHandler  } from 'react-native'
 import React, { useEffect } from 'react'
 import { Image } from 'react-native-elements';
 import tw from 'twrnc';
-import axios from 'axios'
 import { useNavigation } from '@react-navigation/native'
 
 

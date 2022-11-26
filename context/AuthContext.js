@@ -45,7 +45,8 @@ export const AuthProvider = ({ children }) => {
       setError("Todos campos devem ser preenchidos")
     }
 
-    setIsLoading(false)
+      setIsLoading(false)
+  
   }
 
   function getAge(dateString) {
@@ -94,7 +95,7 @@ export const AuthProvider = ({ children }) => {
       setError("Preencha todos os campos")
     }
 
-    setIsLoading(false)
+      setIsLoading(false)
   }
 
   const logout = () => {
@@ -150,8 +151,10 @@ export const AuthProvider = ({ children }) => {
     isLoggedIn();
   }, [])
 
+
+
   return (
-    <AuthContext.Provider value={{ login, logout, isLoggedIn, isLoading,setIsLoading, userToken, userInfo, error, register, refreshUserInfo, setError}}>
+    <AuthContext.Provider value={{ login, logout, isLoggedIn, isLoading, setIsLoading, userToken, userInfo, error, register, refreshUserInfo, setError}}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,13 +1,11 @@
 import { View, Text, Image, StyleSheet } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React from 'react'
 import tw from 'twrnc';
 import slides from './slides'
 import AppIntroSlider from 'react-native-app-intro-slider';
 
 
 const FirstScreenSlider = () => {
-  const [showHome, setShowHome] = useState(false)
-
   function renderSlides({ item }) {
     return (
       <View style={tw`flex w-full h-full pt-10 items-center bg-white`}>

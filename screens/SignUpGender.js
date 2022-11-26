@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Text, View, StyleSheet, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import RadioButton from '../components/RadioButton';
 import axios from 'axios'
 import tw from 'twrnc';
@@ -10,7 +10,7 @@ import { BASE_URL } from '../config';
 
 export default SignUpGender = () => {
   const navigation = useNavigation()
-  const { userToken, userInfo, error, setError } = useContext(AuthContext)
+  const { userToken, error, setError } = useContext(AuthContext)
   const [option, setOption] = useState(null);
   const [loading, setLoading] = useState(false)
 
@@ -59,7 +59,7 @@ export default SignUpGender = () => {
           setError(err.response.data.error)
         })
     }else{
-      setError("Escolha um genero")
+      setError("Escolha um genêro")
     }
     setLoading(false)
 
@@ -67,6 +67,7 @@ export default SignUpGender = () => {
 
   useEffect(() => {
     setError("")
+    setOption(null)
   }, [])
 
   return (
@@ -75,15 +76,15 @@ export default SignUpGender = () => {
     <Text style={tw`text-3xl font-bold ml-3`}>Seu gênero</Text>
       </View>
 
-      {!!error && <Text style={tw`flex w-86 mt-8 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text>}
+      {!!error && <Text style={tw`flex w-86 mt-6 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text>}
 
-      <View style={tw`flex w-full h-3/6 justify-center `}>
+      <View style={tw`flex w-full h-3/6 justify-center pt-4`}>
         <RadioButton key={data.key} data={data} onSelect={(value) => setOption(value)} />
       </View>
 
 
       <View
-        style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl self-center`}
+        style={tw`flex w-85 h-11 bg-red-600 justify-center items-center rounded-lg shadow-lg self-center mt-2`}
         onStartShouldSetResponder={() => {
             updateGender()
           }}
@@ -91,26 +92,12 @@ export default SignUpGender = () => {
           {loading ? (
             <Text style={tw``}><ActivityIndicator size="small" color="#FFF" /></Text>
           ) : (
-            <Text style={tw`text-white text-base`}>
+            <Text style={tw`text-white text-base font-semibold`}>
               Continuar
             </Text>
           )}
       </View>
 
-      <View
-      style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-12 self-center`}
-      onStartShouldSetResponder={() => {
-          navigation.navigate("SignUpOrientation")
-        }}
-      >
-        {loading ? (
-          <Text style={tw``}><ActivityIndicator size="small" color="#FFF" /></Text>
-        ) : (
-          <Text style={tw`text-white text-base`}>
-            Skip
-          </Text>
-        )}
-      </View>
 
     </View>
   )

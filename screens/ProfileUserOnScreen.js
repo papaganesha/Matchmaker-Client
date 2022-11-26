@@ -1,40 +1,9 @@
-import { View, Text, Button, ScrollView, StyleSheet, Image, ImageBackground, ActivityIndicator, TouchableOpacity } from 'react-native'
-import React, { Component, useContext, useEffect, useState } from 'react'
-import * as ImagePicker from 'expo-image-picker';
-import EditableText from 'react-native-inline-edit';
-import tw from 'twrnc';
-import axios from 'axios'
-
+import { View, Text,  ScrollView, ImageBackground, ActivityIndicator } from 'react-native'
+import React, { useContext, useEffect } from 'react'
+import tw from 'twrnc'
 import Icon from 'react-native-vector-icons/FontAwesome'
-
-
-import { AdvancedImage } from '@cloudinary/react';
-import { Cloudinary } from '@cloudinary/url-gen';
-import { fill } from "@cloudinary/url-gen/actions/resize";
-
-import { BASE_URL } from '../config'
-
 import { AuthContext } from '../context/AuthContext';
-import { useNavigation } from '@react-navigation/native'
 
-import { FlatListSlider } from '@kuasha420/react-native-flatlist-slider';
-
-
-const ImageSlider = (props) => {
-  const { logout, userInfo, userToken, refreshUserInfo } = useContext(AuthContext)
-
-  const images = [
-    userInfo.mainPicture,
-    ...userInfo.pictures
-  ];
-
-  return <FlatListSlider
-    style={tw`flex w-full h-full justify-center`}
-    animated={false}
-    showIndicator={false}
-    resizeMode='center'
-    images={images} />;
-};
 
 
 function getAge(dateString) {
@@ -49,7 +18,7 @@ function getAge(dateString) {
 }
 
 const ProfileUserOnScreen = ({route, navigation}) => {
-  const { userInfo, userToken, logout, refreshUserInfo, error, setError, isLoading, setIsLoading } = useContext(AuthContext)
+  const { userInfo, error, setError, isLoading } = useContext(AuthContext)
   const {user} = route.params
   
   const RenderPictures = () => {
@@ -124,9 +93,12 @@ const ProfileUserOnScreen = ({route, navigation}) => {
     return (
       <View style={tw`flex w-full h-48`}>
         <Text style={tw`mt-3 ml-8 text-base font-bold `}>Sobre</Text>
-        <View style={tw` mx-8 rounded border h-30 px-3 pt-1 mt-3`}>
-          <Text style={tw`mt-2 font-medium`}>{summary}</Text>
+        <View style={tw` mx-8 rounded-lg bg-red-600 border-white h-30 px-3 pt-1 mt-3`}>
+          <Text style={tw`mt-2 font-medium text-white`}>{summary}</Text>
         </View>
+        <View style={tw`w-full items-end pr-9 pt-1`}>
+        <Text>{summary.length}/400</Text>
+      </View>
       </View>
     )
   }
@@ -139,12 +111,12 @@ const ProfileUserOnScreen = ({route, navigation}) => {
           <View style={tw`flex w-full flex-row flex-wrap font-bold justify-start px-6 pt-4`}>
             {interests.map(interest => {
               return (
-                <View style={tw`flex flex-row border rounded ml-3 mb-3`}>
+                <View style={tw`flex flex-row border-white rounded-lg bg-red-600 ml-3 mb-3`} key={interest.interestName}>
                   <View style={tw`flex justify-center items-center w-14`}>
-                    <Icon name={interest.iconName} style={tw``} size={18} color="black" />
+                    <Icon name={interest.iconName} style={tw``} size={18} color="white" />
                   </View>
                   <View style={tw`flex justify-center items-start h-9 w-24`}>
-                    <Text style={tw`font-bold ml-1`}>{interest.interestName}</Text>
+                    <Text style={tw`font-bold ml-1 text-white`}>{interest.interestName}</Text>
                   </View>
                 </View>
               )

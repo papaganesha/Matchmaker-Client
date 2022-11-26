@@ -1,9 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Text, View, StyleSheet, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import RadioButton from '../components/RadioButton';
 import axios from 'axios'
 import tw from 'twrnc';
-import Icon from 'react-native-vector-icons/FontAwesome'
 import { AuthContext } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
@@ -18,9 +17,9 @@ const SignUpOrientation = () => {
   const [loading, setLoading] = useState(false)
 
   const data = [
-    { key: 0, value: 'Heterossexual' },
-    { key: 1, value: 'Bissexual' },
-    { key: 2, value: 'Homossexual' },
+    { key: 0, value: 'Heterosexual' },
+    { key: 1, value: 'Bisexual' },
+    { key: 2, value: 'Homosexual' },
   ]
 
   const updateOrientation = async () => {
@@ -28,13 +27,13 @@ const SignUpOrientation = () => {
     console.log(option)
     let orientation
     if (option) {
-      if (option == "Heterossexual") {
+      if (option == "Heterosexual") {
         orientation = 0
       }
-      if (option == "Bissexual") {
+      if (option == "Bisexual") {
         orientation = 1
       }
-      if (option == "Homossexual") {
+      if (option == "Homosexual") {
         orientation = 2
       }
       console.log(orientation)
@@ -75,12 +74,12 @@ const SignUpOrientation = () => {
       {!!error && <Text style={tw`flex w-85 mt-5 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text>}
 
 
-      <View style={tw`flex w-full h-3/6 justify-start pt-10`}>
+      <View style={tw`flex w-full h-85 justify-start pt-10`}>
         <RadioButton key={data.key} data={data} onSelect={(value) => setOption(value)} />
       </View>
 
       <View
-        style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl self-center`}
+        style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-lg self-center shadow-lg`}
         onStartShouldSetResponder={() => {
           updateOrientation()
         }}
@@ -88,23 +87,8 @@ const SignUpOrientation = () => {
         {loading ? (
           <Text style={tw``}><ActivityIndicator size="small" color="#FFF" /></Text>
         ) : (
-          <Text style={tw`text-white text-base`}>
+          <Text style={tw`text-white text-base font-semibold`}>
             Continuar
-          </Text>
-        )}
-      </View>
-
-      <View
-      style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-12 self-center`}
-      onStartShouldSetResponder={() => {
-          navigation.navigate("SignUpPics")
-        }}
-      >
-        {loading ? (
-          <Text style={tw``}><ActivityIndicator size="small" color="#FFF" /></Text>
-        ) : (
-          <Text style={tw`text-white text-base`}>
-            Skip
           </Text>
         )}
       </View>

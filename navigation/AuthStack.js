@@ -17,7 +17,7 @@ const AuthStack = () => {
   const { login, error, isLoading, userInfo, logout} = useContext(AuthContext)
 
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}  initialRouteName='FirstScreen'>
+    <Stack.Navigator screenOptions={{headerShown: false, headerMode: false}}  initialRouteName='FirstScreen'>
       <Stack.Screen name="FirstScreen" component={FirstScreen} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="SignIn" component={SignIn} />

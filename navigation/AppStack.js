@@ -4,7 +4,6 @@ import React, { useContext, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Home from '../screens/Home';
-import VerifyEmail from '../screens/VerifyEmail';
 import SignUpGender from '../screens/SignUpGender'
 
 import SignUpInterests from '../screens/SignUpInterests'
@@ -14,7 +13,6 @@ import SignUpPics from '../screens/SignUpPics'
 import EnableNotifications from '../screens/EnableNotifications'
 import ProfileUserOnScreen from '../screens/ProfileUserOnScreen'
 import MatchAnimation from '../screens/MatchAnimation'
-import ChatScreen from '../screens/ChatScreen'
 import MessagesScreen from '../screens/MessagesScreen'
 
 
@@ -57,7 +55,6 @@ const AppStack = () => {
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="ProfileUserOnScreen" component={ProfileUserOnScreen} />
           <Stack.Screen name="MatchAnimation" component={MatchAnimation} />
-          <Stack.Screen name="ChatScreen" component={ChatScreen} />
           <Stack.Screen name="MessagesScreen" component={MessagesScreen} />
 
         </Stack.Navigator>

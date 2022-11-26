@@ -4,15 +4,11 @@ import tw from 'twrnc';
 import { CometChat } from '@cometchat-pro/react-native-chat';
 import { useIsFocused } from "@react-navigation/core";
 
-
-
 import Icon from 'react-native-vector-icons/FontAwesome';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 import Profile from './Profile'
 import Matchs from './Matchs';
-
-
 
 import { AuthContext } from '../context/AuthContext';
 
@@ -22,18 +18,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
-
 import SwipableCards from './SwipableCards';
-
-import Footer from '../components/Footer';
-
 
 
 function Homes() {
   const { userInfo } = useContext(AuthContext)
   return (
     <View style={styles.container}>
-    <View style={tw`flex w-full justify-center items-center mb-8`}>
+    <View style={tw`flex w-full items-center mb-6`}>
     <Text style={tw`text-2xl font-semibold`}>Descubra</Text>
     <Text style={tw`text-sm text-gray-500`}>{userInfo.city}</Text>
     </View>
@@ -43,17 +35,15 @@ function Homes() {
 }
 
 
-const Home = () => {
-  const navigation = useNavigation()
-  const { userInfo, refreshUserInfo } = useContext(AuthContext)
+const Home = ({navigation}) => {
+  const { userInfo, refreshUserInfo, setError } = useContext(AuthContext)
   const isFocused = useIsFocused();
-
 
   const initializeCometchat = () => {
     //VARIAVEIS AMBIENTE DA APLICAÇÃO
-    const appID = '22363314d6b05de2';
+    const appID = '22640333e5949db3';
     const region = 'us';
-    const authKey = 'cefa05028acbf59fc97a08e61ad0f14765251514';
+    const authKey = '5742c0b19492637494d0242f131b5964f5cba46a';
 
     //NOME COMPLETO E ID DO USUARIO
     const UID = userInfo._id;
@@ -115,7 +105,6 @@ const Home = () => {
 
         //   }
         // )
-
       }
       , error => {
         console.log('Login failed with exception:', { error })
@@ -145,6 +134,7 @@ const Home = () => {
       new CometChat.MessageListener({
         onTextMessageReceived: textMessage => {
           console.log("Text message received: ", textMessage)
+          
         },
         onMediaMessageReceived: mediaMessage => {
           console.log("Media message received: ", mediaMessage)
@@ -166,15 +156,13 @@ const Home = () => {
 
   useEffect(() => {
     //refreshUserInfo()
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Home'}],
+    });
     initializeCometchat()
+    setError("")
   }, [])
-
-  useEffect(() => {
-    if (isFocused) {
-      console.log("focado home")
-    }
-  }, [isFocused]);
-
 
 
 
@@ -220,75 +208,11 @@ const Home = () => {
 export default Home
 
 
-
-
-
-
-// <View style={styles.cardContainer}>
-
-// {usersInfo ? (
-//   usersInfo.map((user) => {
-//     return (
-//       <View key={user._id}>
-//         <TinderCard key={user._id} onSwipe={(dir) => swiped(dir, user)} onCardLeftScreen={() => outOfFrame(`${user.fName} ${user.sName}`)} flickOnSwipe={true} preventSwipe={["up, down"]}>
-//           <View style={styles.card} >
-//             <TouchableOpacity style={tw`w-full h-full`} onPress={() => { navigation.navigate("ProfileUserOnScreen", {user:user}) }}>
-
-//               <ImageBackground style={[tw`justify-end`, styles.cardImage]} source={user.mainPicture ? { uri: user.mainPicture } : require("../assets/placeholder1.jpg")}>
-
-//                 <View style={tw`w-full h-1/6 flex-row justify-center bg-black rounded bg-opacity-40`}>
-//                   <View style={tw`flex w-3/4 justify-center`}>
-//                     <Text style={tw`w-full text-white ml-5 text-2xl font-semibold`}>{`${user.fName} ${user.sName}, ${returnAge(user.birthDate)}`} </Text>
-//                     <Text style={tw`w-full text-white ml-5`}>{`${returnGender(user.gender)} ${returnOrientation(user.sexOrientation)}`} </Text>
-//                   </View>
-//                   <View style={tw`w-1/4  justify-center items-end`}
-//                     onStartShouldSetResponder={() => {
-//                       console.log("click")
-//                     }}
-//                   >
-//                     <TouchableOpacity style={tw` p-4`} onPress={() => { navigation.navigate("ProfileUserOnScreen", {user:user}) }}>
-//                       <Icon style={tw`mr-2`} name="info-circle" size={25} color={"white"} />
-//                     </TouchableOpacity>
-//                   </View>
-
-//                 </View>
-
-//               </ImageBackground>
-//             </TouchableOpacity>
-
-//           </View>
-//         </TinderCard>
-
-//       </View>
-//     )
-//   })
-// ) : (
-//   <View><Text>Acabaram os cards</Text></View>
-// )}
-// </View>
-
-
-
-// <View style={tw`w-full border flex-row justify-center flex-wrap h-25 pt-3`}>
-// <TouchableOpacity style={tw`w-1/4 h-25 border justify-center items-center rounded-full mr-6`} onPress={() => {
-//   swiped("left", userOnScreen)
-// }}>
-//   <Icon name="close" style={tw``} size={30} color="black" />
-// </TouchableOpacity>
-// <TouchableOpacity style={tw`w-1/4 border justify-center items-center rounded-full ml-6`} onPress={() => {
-//   swiped("right", userOnScreen)
-// }}>
-//   <Icon name="heart" style={tw``} size={30} color="black" />
-// </TouchableOpacity>
-// </View>
-
-
-
 const styles = {
   container: {
     display: 'flex',
     alignItems: 'center',
-    paddingTop: 65,
+    paddingTop: 15,
     width: '100%',
     height: '100%',
   },
@@ -307,7 +231,7 @@ const styles = {
     backgroundColor: '#fff',
     width: '100%',
     maxWidth: 350,
-    height: 600,
+    height: 500,
     shadowColor: 'black',
     shadowOpacity: 0.2,
     shadowRadius: 20,

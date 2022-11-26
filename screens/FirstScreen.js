@@ -1,25 +1,12 @@
 
-import React, {useState} from 'react'
-import { View, Text, Button, Image } from 'react-native'
-import { NavigationActions } from '@react-navigation/stack'
+import React from 'react'
+import { View, Text} from 'react-native'
 import tw from 'twrnc';
 import FirstScreenSlider from './FirstScreenSlider'
 
 
 
 export default FirstScreen = ({navigation}) => {
-    const [loading, setLoading] = useState(true)
-    setTimeout(()=> setLoading(false), 4000)
-
-  if(loading){
-    return (
-        <View style={tw`flex-1 justify-center items-center bg-white`}>
-            <View style={tw`w-3/4 h-full`}>
-                 <Image resizeMode="contain" style={tw`w-full h-full`} source={require('../assets/logo.png')} />
-            </View>
-        </View>
-    )
-  }else{
     return (
         <View style={tw`flex-col w-full bg-white`}>
             <View style={tw`flex w-full h-9/12 bg-white justify-center pt-1`}>
@@ -27,13 +14,13 @@ export default FirstScreen = ({navigation}) => {
             </View>
             <View style={tw`flex w-full h-3/12 px-6 items-center`}>
                 <View 
-                style={tw`flex w-12/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-4`}
+                style={tw`flex w-12/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-4 shadow-lg`}
                     onStartShouldSetResponder={() => {
                         console.log("Criar conta clicado")
                         navigation.navigate("SignUp")
                     }}
                 >
-                    <Text style={tw`text-white text-base `}>
+                    <Text style={tw`text-white text-base font-semibold`}>
                         Criar uma conta
                     </Text>  
                 </View>
@@ -49,6 +36,5 @@ export default FirstScreen = ({navigation}) => {
             </View>
         </View>
       )
-  }
 }
 

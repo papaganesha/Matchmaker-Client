@@ -16,7 +16,7 @@ const TextField = ({ label, ...inputProps }) => {
   return (
     <View style={tw`w-full justify-center items-center mt-4`}>
       <Text style={tw`w-full pl-4 font-semibold text-base`}>{label}</Text>
-      <TextInput style={tw`my-1 mb-2 border w-11/12 py-2 rounded bg-white px-2`}
+      <TextInput style={tw`my-1 mb-2 border w-11/12 py-2 rounded bg-white px-3 shadow-lg`}
         {...inputProps}
         onFocus={(e) => setFocused(true)}
         onBlur={(e) => setFocused(false)}
@@ -67,7 +67,6 @@ const SignUpNameAndCity = ({ navigation }) => {
         })
 
     } else {
-      console.log("drip")
       setError("Preencha todos os campos")
 
     }
@@ -84,9 +83,9 @@ const SignUpNameAndCity = ({ navigation }) => {
         <Text style={tw`text-3xl font-bold ml-7`}>Detalhes do Perfil</Text>
       </View>
 
-      {!!error && <Text style={tw`flex w-85 mt-8 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text>}
+      {!!error && <Text style={tw`flex w-85 mt-6 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text>}
 
-      <View style={tw`flex w-full h-50 mt-6 px-3`}>
+      <View style={tw`flex w-full h-50 mt-5 px-3`}>
         <TextField
           value={fName}
           label={'Nome'}
@@ -103,9 +102,9 @@ const SignUpNameAndCity = ({ navigation }) => {
         />
       </View>
 
-      <View style={tw`flex w-11/12 h-auto px-3 justify-center self-center mt-4 mb-2`}>
+      <View style={tw`flex w-11/12 h-auto px-3 justify-center self-center mt-4 mb-2 `}>
         <SelectDropdown
-          buttonStyle={tw`flex w-full border rounded-lg `}
+          buttonStyle={tw`flex w-full text-white rounded-lg bg-transparent border`}
           defaultButtonText="Selecione sua cidade"
 
           data={capitals}
@@ -138,7 +137,7 @@ const SignUpNameAndCity = ({ navigation }) => {
       </View>
 
       <View
-      style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-10 self-center`}
+      style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-lg mt-10 self-center shadow-lg`}
       onStartShouldSetResponder={() => {
           updateProfileDetails()
         }}
@@ -146,26 +145,12 @@ const SignUpNameAndCity = ({ navigation }) => {
         {loading ? (
           <Text style={tw``}><ActivityIndicator size="small" color="#FFF" /></Text>
         ) : (
-          <Text style={tw`text-white text-base`}>
+          <Text style={tw`text-white text-base font-semibold`}>
             Continuar
           </Text>
         )}
       </View>
 
-      <View
-      style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-12 self-center`}
-      onStartShouldSetResponder={() => {
-          navigation.navigate("SignUpGender")
-        }}
-      >
-        {loading ? (
-          <Text style={tw``}><ActivityIndicator size="small" color="#FFF" /></Text>
-        ) : (
-          <Text style={tw`text-white text-base`}>
-            Skip
-          </Text>
-        )}
-      </View>
 
     </View>
   )

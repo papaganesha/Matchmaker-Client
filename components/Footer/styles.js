@@ -1,5 +1,7 @@
 import styled from 'styled-components/native';
 import { FontAwesome } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/FontAwesome'
+
 import { VERTICAL_MARGIN } from '../../utils/constants';
 
 export const Container = styled.View`
@@ -22,14 +24,14 @@ export const RoundButton = styled.TouchableOpacity.attrs({
   elevation: 5;
 `;
 
-export const IconX = styled(FontAwesome).attrs({
+export const IconX = styled(Icon).attrs({
   name: 'times',
   size: 40,
 })`
   color: #ff006f;
 `;
 
-export const IconHeart = styled(FontAwesome).attrs({
+export const IconHeart = styled(Icon).attrs({
   name: 'heart',
   size: 34,
 })`

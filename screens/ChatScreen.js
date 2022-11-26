@@ -2,7 +2,6 @@ import { View, Text, TextInput } from 'react-native'
 import React, { useState, useContext, useEffect } from 'react'
 import { TouchableOpacity } from "react-native-gesture-handler"
 import tw from 'twrnc';
-import axios from 'axios'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { CometChat } from '@cometchat-pro/react-native-chat';
 
@@ -208,50 +207,3 @@ const ChatScreen = ({ route, navigation }) => {
 
 export default ChatScreen
 
-
-
-// <ScrollView style={tw`flex w-full h-full border bg-white rounded`}>
-// <View style={tw`flex w-full h-full flex-row`}>
-//     <View style={tw`flex w-2/4 h-full items-start pl-2`}>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-5`}>
-//             <Text>Gostei do seu penteado, ooooooo</Text>
-//         </View>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-25`}>
-//             <Text>Gostei do seu penteado, ooooooo</Text>
-//         </View>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-25`}>
-//             <Text>Gostei do seu penteado, ooooooo</Text>
-//         </View>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-25`}>
-//             <Text>Gostei do seu penteado, ooooooo</Text>
-//         </View>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-25`}>
-//             <Text>Gostei do seu penteado, ooooooo</Text>
-//         </View>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-25`}>
-//             <Text>Gostei do seu penteado, ooooooo</Text>
-//         </View>
-//     </View>
-//     <View style={tw`flex w-2/4 h-full items-end pr-2`}>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-25`}>
-//             <Text>Muito obrigado gata</Text>
-//         </View>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-25`}>
-//             <Text>Muito obrigado gata</Text>
-//         </View>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-25`}>
-//             <Text>Muito obrigado gata</Text>
-//         </View>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-25`}>
-//             <Text>Muito obrigado gata</Text>
-//         </View>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-25`}>
-//             <Text>Muito obrigado gata</Text>
-//         </View>
-//         <View style={tw`bg-gray-200 p-3 h-15 justify-center items-center border rounded mt-25 mb-8`}>
-//             <Text>Muito obrigado gata</Text>
-//         </View>
-//     </View>
-
-// </View>
-// </ScrollView>

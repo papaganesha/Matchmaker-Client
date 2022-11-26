@@ -23,9 +23,11 @@ const ChatHeader = ({ username, bio, picture, onlineStatus, onPress }) => {
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: "row",
-		backgroundColor: "red",
-		paddingTop: 40,
-		paddingBottom: 10,
+		backgroundColor: "#DC2626",
+		paddingTop: 12,
+		paddingBottom: 12,
+		borderBottomWidth: 2, 
+		borderBottomColor: "white",
 	},
 	backButton: {
 		alignSelf: "center",
