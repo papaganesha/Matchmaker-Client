@@ -1,7 +1,0 @@
--  const configurations = userConfig.configurations || [];
-+  let configurations = [];
-+  if(userConfig) {
-+    configurations = userConfig.configurations || [];
-+  }
-
-Patch node_modules/@react-native-community/cli-platform-ios/build/config/index.js
