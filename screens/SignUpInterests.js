@@ -153,7 +153,7 @@ const SignUpInterests = ({navigation}) => {
                 //CRIA USUARIO NO COMETCHAT
                 initializeCometchat()
                 refreshUserInfo()
-                navigation.navigate("Home")
+                //navigation.navigate("Home")
               }
             })
             .catch(err => {

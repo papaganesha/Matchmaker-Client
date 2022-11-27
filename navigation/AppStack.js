@@ -30,23 +30,6 @@ const AppStack = () => {
     refreshUserInfo()
   }, [])
 
-  if (isLoading) {
-    return(
-      <View>
-          <ActivityIndicator size="small" color="#FFF" />
-      </View>
-    )
-  } else {
-    if (userInfo.firstLogin) {
-      return (
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='Home'>
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="ProfileUserOnScreen" component={ProfileUserOnScreen} />
-        <Stack.Screen name="MatchAnimation" component={MatchAnimation} />
-        <Stack.Screen name="MessagesScreen" component={MessagesScreen} />
-        </Stack.Navigator>
-      )
-    } else{
       return (
         <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='Home'>
           <Stack.Screen name="Home" component={Home} />
@@ -56,9 +39,6 @@ const AppStack = () => {
 
         </Stack.Navigator>
       )
-
-    }
-  }
 
 };
 

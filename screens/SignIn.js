@@ -33,10 +33,6 @@ const SignIn = () => {
   },[])
 
 
-  useEffect(()=>{
-    console.log(loading)
-  },[loading])
-
   const RenderButton = () => {
     if(loading){
       return(

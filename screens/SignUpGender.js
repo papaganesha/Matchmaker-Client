@@ -94,7 +94,7 @@ export default SignUpGender = () => {
           }}
         >
           {loading ? (
-            <Text style={tw``}><ActivityIndicator size="small" color="#FFF" /></Text>
+            <Text style={tw``}><ActivityIndicator size={15} color="#FFF" /></Text>
           ) : (
             <Text style={tw`text-white text-base font-semibold`}>
               Continuar

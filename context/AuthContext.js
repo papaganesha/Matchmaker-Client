@@ -44,9 +44,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       setError("Todos campos devem ser preenchidos")
     }
-
     setLoading(false)
-  
   }
 
   function getAge(dateString) {
