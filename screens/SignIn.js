@@ -23,24 +23,31 @@ const TextField = ({ label, ...inputProps }) => {
 
 const SignIn = () => {
   const navigation = useNavigation()
-  const { login, error, userInfo, userToken, logout, setError } = useContext(AuthContext)
+  const { login, error, userToken, setError, loginLoading } = useContext(AuthContext)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
 
   useEffect(()=>{
     setError("")
   },[])
 
 
+  // useEffect(()=>{
+  //   console.log("yaep ", loginLoading.current)
+  // },[loginLoading.current])
+
+
+
+
   const RenderButton = () => {
-    if(loading){
+    console.log("IN SIGNIN ",loginLoading.current)
+    if(loginLoading.current){
       return(
         <ActivityIndicator size={15} color="#FFF" />
       )
     }else{
       return(
-        <Text  style={tw`text-white font-semibold`} >Entrar</Text>
+        <Text style={tw`text-white font-semibold`}>Entrar</Text>
       )
     }
   }
@@ -60,7 +67,6 @@ const SignIn = () => {
             label={'Email'}
             value={email}
             onChangeText={text => {
-              //console.log(text)
               setEmail(text)
             }}
           />
@@ -81,7 +87,7 @@ const SignIn = () => {
           <TouchableOpacity
             style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-lg mt-10 shadow-lg`}
             onPress={() => {
-              login(email, password, setLoading)
+              login(email, password)
 
             }}
             >

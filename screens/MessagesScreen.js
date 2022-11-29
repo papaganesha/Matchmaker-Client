@@ -48,7 +48,6 @@ const MessagesScreen = ({ navigation, route }) => {
 
 		messagesRequest.fetchPrevious().then(
 			messages => {
-				//console.log(messages[messages.length - 1])
 				setMessages(messages)
 			}, error => {
 				console.log(`Message fetching failed with error ${error}`)

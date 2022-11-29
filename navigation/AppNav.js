@@ -15,7 +15,7 @@ const AppNav = () => {
     if (isLoading) {
         return (
             <View style={tw`flex-1 justify-center items-center`}>
-                <ActivityIndicator size={'large'} />
+                <ActivityIndicator size={30} />
             </View>
         )
     } else {

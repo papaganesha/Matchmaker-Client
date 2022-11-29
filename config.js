@@ -1,4 +1,4 @@
-export const BASE_URL = "https://matchmaker-api-2022.herokuapp.com/api/v1/"
+export const BASE_URL = "https://matchmaker-8gdd.onrender.com/api/v1/"
 
 
 

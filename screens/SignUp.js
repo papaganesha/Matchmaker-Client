@@ -24,7 +24,7 @@ const TextField = ({ label, ...inputProps }) => {
 }
 
 const SignUp = () => {
-  const { error, isLoading, userToken, register, setError } = useContext(AuthContext)
+  const { error, registerLoading, userToken, register, setError } = useContext(AuthContext)
   const [email, setEmail] = useState(null)
   const [password, setPass] = useState(null)
   const [confirmPass, setConfirm] = useState(null)
@@ -150,7 +150,7 @@ const formatTime = () => {
               register(email, password, confirmPass, birthDate)
             }}
           >
-            {isLoading ? (
+            {registerLoading.current ? (
               <ActivityIndicator size="small" color="#FFF" />
             ) : (
               <Text style={tw`text-white font-semibold`} >Cadastrar</Text>

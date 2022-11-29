@@ -61,7 +61,6 @@ const Profile = () => {
 
   const openImageLibrary = () => {
     ImagePicker.clean().then(() => {
-      console.log('removed all tmp images from tmp directory');
     }).catch(e => {
       console.log(e);
 
@@ -71,8 +70,6 @@ const Profile = () => {
       height: 375,
       cropping: true
     }).then(image => {
-      console.log(image)
-      console.log(image.path)
       uploadProfileImage(image.path)
     });
 }
@@ -96,9 +93,7 @@ const uploadProfileImage = async (uri) => {
         },
     }).then(res => {
         if (res.data.success) {
-                console.log("Upload feito com sucesso")
                 refreshUserInfo()
-                //setError("Upload feito com sucesso")
         }
     }).catch(err => {
         console.log("ERR ", err.response.data.error);
@@ -300,7 +295,7 @@ const uploadProfileImage = async (uri) => {
     if (profileImage) {
       
       return (
-        <View style={tw`flex w-full h-full rounded`}>
+        <View style={tw`flex w-full h-full rounded border-b`}>
           {!loading ? (
             <ImageBackground imageStyle={tw`rounded`} style={tw`flex w-full h-full`} source={{ uri: profileImage }} >
               <View style={tw`flex w-full h-full rounded justify-end items-end`}>
@@ -498,7 +493,6 @@ const uploadProfileImage = async (uri) => {
             <TouchableOpacity
               style={tw`flex w-25 h-10 border-white justify-center items-center rounded-lg mx-2 flex-row pr-2 bg-red-600`}
               onPress={() => {
-                console.log("loggout click")
                 logout()
               }}
             >

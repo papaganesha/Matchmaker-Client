@@ -85,7 +85,7 @@ const SignUpNameAndCity = ({ navigation }) => {
 
       {!!error && <Text style={tw`flex w-85 mt-6 text-center text-base font-semibold border rounded p-1 self-center`}>{error}</Text>}
 
-      <View style={tw`flex w-full h-50 mt-5 px-3`}>
+      <View style={tw`flex w-full h-50 mt-4 px-3`}>
         <TextField
           value={fName}
           label={'Nome'}
@@ -109,7 +109,6 @@ const SignUpNameAndCity = ({ navigation }) => {
 
           data={capitals}
           onSelect={(selectedItem, index) => {
-            console.log(selectedItem, index)
             setCity(selectedItem)
           }}
           buttonTextAfterSelection={(selectedItem, index) => {

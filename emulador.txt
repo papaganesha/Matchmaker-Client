@@ -1,0 +1,1 @@
+emulator -avd Pixel_4_API_30 -netdelay none -netspeed full -read-only -dns-server 8.8.8.8 -gpu swiftshader_indirect

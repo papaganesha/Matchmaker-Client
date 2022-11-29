@@ -125,7 +125,6 @@ const SignUpInterests = ({navigation}) => {
         return { interestName: item.interestName, iconName: item.iconName }
       }
     })
-    console.log("upload", toUpload)
 
     if (toUpload.length < 3) {
       setError("Escolha no minimo 3 interesses")
@@ -139,7 +138,7 @@ const SignUpInterests = ({navigation}) => {
       }).then(res => {
         console.log("SUCCESS >", res.data.success)
         if (res.data.success) {
-          console.log("sucesso na inserção de interesses", res.data.message)
+          ("sucesso na inserção de interesses", res.data.message)
 
           axios.put(`${BASE_URL}user`, {
             firstLogin: false
@@ -153,11 +152,9 @@ const SignUpInterests = ({navigation}) => {
                 //CRIA USUARIO NO COMETCHAT
                 initializeCometchat()
                 refreshUserInfo()
-                //navigation.navigate("Home")
               }
             })
             .catch(err => {
-              //console.log("UPDATE USER FIRSTLOGIN SET ERROR: ", JSON.stringify(err.response.data.error))
               console.log("err", err)
               setError(err)
             })

@@ -118,7 +118,6 @@ const Advanced = () => {
 
 
   const swiped = (direction, user) => {
-    //console.log('removing: ' + nameToDelete + ' to the ' + direction)
     if (direction === 'right') {
       console.log(`LIKED: ${user.fName} ${user.sName} to the ${direction}`)
       addLike(user)
@@ -131,7 +130,6 @@ const Advanced = () => {
 
   const outOfFrame = (name) => {
     //alreadyRemoved.push(name)
-    console.log(name + ' left the screen!')
     setUsersInfo((current) =>
       current.filter((user) => user.fName != name)
     );
@@ -148,8 +146,6 @@ const Advanced = () => {
       setUsersInfo((current) =>
         current.filter((user) => user.fName != toBeRemoved.fName)
       );
-      console.log(childRefs)
-      console.log(toBeRemoved, index)
       childRefs[index].current.swipe(dir) // Swipe the card!
 
 

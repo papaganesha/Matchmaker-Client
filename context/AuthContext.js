@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react"
+import React, { createContext, useState, useEffect, useRef } from "react"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios'
 
@@ -7,17 +7,22 @@ import { BASE_URL } from '../config'
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-
+  const loginLoading = useRef(false);
+  const registerLoading = useRef(false);
+  //const [loginLoading, setLoginLoading]= useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [userToken, setUserToken] = useState(null)
   const [userInfo, setUserInfo] = useState(null)
-
+  const loadingStateRef = useRef(isLoading);
   const [error, setError] = useState("")
 
 
 
-  const login = async (email, password, setLoading) => {
-    setLoading(true)
+  const login = (email, password) => {
+    
+    console.log("LOADING FIRST IS",loginLoading.current)
+    loginLoading.current = true
+    console.log("LOADING TRUE ",loginLoading.current)
 
     if (email && password) {
       axios.post(`${BASE_URL}signin`, {
@@ -25,26 +30,36 @@ export const AuthProvider = ({ children }) => {
         password
       })
         .then(res => {
+          console.log(res)
           setUserInfo(res.data.user)
           setUserToken(res.data.token)
           setFirstLogin(res.data.firstLogin)
 
           AsyncStorage.setItem("userInfo", JSON.stringify(res.data.user))
           AsyncStorage.setItem("userToken", res.data.token)
+          loginLoading.current = false
 
-          //console.log(res.data)
-          //console.log("USER INFO: ", JSON.stringify(res.data.user))
         })
         .catch(err => {
-          //console.log(`Login erro ${err.response.data.error}`)
-          setError(err.response.data.error)
-          console.log("LOGIN ERROR ",error)
-
+          console.log(err.code)
+            loginLoading.current = false
+            console.log("LOADING FALSE ",loginLoading.current)
+            setError(err.response.data.error)
+            console.log("LOGIN ERROR ",error)
         })
+        
+  
+        
     } else {
-      setError("Todos campos devem ser preenchidos")
+      setTimeout(()=>{
+        loginLoading.current = false
+        console.log("LOADING FALSE",loginLoading.current)
+        setError("Todos campos devem ser preenchidos")
+
+      },2000)
     }
-    setLoading(false)
+    
+
   }
 
   function getAge(dateString) {
@@ -59,10 +74,12 @@ export const AuthProvider = ({ children }) => {
   }
 
   const register = async (email, password, confirmPass, birthDate) => {
-    setIsLoading(true)
+    setError("")
+    registerLoading.current = true
+    console.log("true'",registerLoading.current)
+ 
     if (email && password && confirmPass && birthDate) {
       let userAge = getAge(birthDate)
-      console.log("userAge ",userAge)
       if (userAge >= 18) {
         if (password !== confirmPass) {
           setError("Senhas não conferem")
@@ -73,27 +90,35 @@ export const AuthProvider = ({ children }) => {
             birthDate
           })
             .then(res => {
-              if (res.data.message) { setError(res.data.message) }
-              //console.log(res.success, res.data)
-              login(email, password)
-              //console.log("USER TOKEN: ",res.data.token)
-              //console.log("USER INFO: ", JSON.stringify(res.data.user))
+              if(res.data.success) {
+                login(email, password)
+              }
             })
             .catch(err => {
-              //console.log(`Login erro ${err.response.data.error}`)
               console.log("REGISTER ERROR ",error)
               setError(err.response.data.error)
             })
 
         }
       } else {
-        setError("Você deve ter 18 anos para poder se cadastrar")
+        setTimeout(()=>{
+          registerLoading.current = false
+          console.log("LOADING FALSE",registerLoading.current)
+          setError("Você deve ter 18 anos para poder se cadastrar")
+  
+        },2000)
       }
     } else {
-      setError("Preencha todos os campos")
+      setTimeout(()=>{
+        registerLoading.current = false
+        console.log("LOADING FALSE",registerLoading.current)
+        setError("Preencha todos os campos")
+      },2000)
+
     }
 
-      setIsLoading(false)
+
+
   }
 
   const logout = () => {
@@ -106,8 +131,8 @@ export const AuthProvider = ({ children }) => {
   }
 
   const isLoggedIn = async () => {
+    setIsLoading(true)
     try {
-      setIsLoading(true)
       let userInfo = await AsyncStorage.getItem('userInfo')
       let userToken = await AsyncStorage.getItem('userToken')
       userInfo = JSON.parse(userInfo)
@@ -117,11 +142,12 @@ export const AuthProvider = ({ children }) => {
         setUserInfo(userInfo)
       }
 
-      setIsLoading(false)
     } catch (e) {
       console.log(`isLoggedIn error ${e}`)
       setError(e)
     }
+  
+    setIsLoading(false)
   }
 
   const refreshUserInfo = async () => {
@@ -152,7 +178,7 @@ export const AuthProvider = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{ login, logout, isLoggedIn, isLoading, setIsLoading, userToken, userInfo, error, register, refreshUserInfo, setError}}>
+    <AuthContext.Provider value={{ login, logout, loginLoading, registerLoading, isLoggedIn, isLoading, setIsLoading, userToken, userInfo, error, register, refreshUserInfo, setError}}>
       {children}
     </AuthContext.Provider>
   )

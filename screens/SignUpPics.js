@@ -20,7 +20,6 @@ export default function SignUpPics({ navigation }) {
         setShowIcon(false)
         setLoading(true)
         ImagePicker.clean().then(() => {
-            console.log('removed all tmp images from tmp directory');
         }).catch(e => {
             console.log(e);
 
@@ -30,7 +29,6 @@ export default function SignUpPics({ navigation }) {
             height: 375,
             cropping: true
         }).then(image => {
-            console.log(image)
             setProfileImage(image.path)
             setShowIcon(false)
 

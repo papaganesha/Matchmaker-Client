@@ -92,19 +92,7 @@ const Home = ({navigation}) => {
   const loginCometchat = (UID, authKey) => {
     CometChat.login(UID, authKey).then(
       user => {
-        console.log('Login Successful:', { user })
         createMsgListener()
-        // let GUID = "global"
-        // let password = ""
-        // let groupType = CometChat.GROUP_TYPE.PUBLIC
-        // CometChat.joinGroup(GUID, groupType, password).then(
-        //   group => {
-        //     console.log('Group joined successfully:', group)
-        //   }, error => {
-        //     console.log('Group joining failed with exception:', error)
-
-        //   }
-        // )
       }
       , error => {
         console.log('Login failed with exception:', { error })
@@ -113,18 +101,6 @@ const Home = ({navigation}) => {
     )
   }
 
-  const logoutCometchat = (UID, authKey) => {
-    CometChat.logout().then(
-      () => {
-        console.log('Logout completed Successfully:', { user })
-        removeMsgListener()
-      }
-      , error => {
-        console.log('Logout failed with exception:', { error })
-        setError(error)
-      },
-    )
-  }
 
   const createMsgListener = () => {
     let listenerID = "GLOBAL_LISTENER_ID"
@@ -146,16 +122,8 @@ const Home = ({navigation}) => {
     )
   }
 
-  const removeMsgListener = () => {
-    let listenerID = "GLOBAL_LISTENER_ID"
-
-    CometChat.removeMessageListener(
-      listenerID,)
-  }
-
 
   useEffect(() => {
-    //refreshUserInfo()
     navigation.reset({
       index: 0,
       routes: [{name: 'Home'}],

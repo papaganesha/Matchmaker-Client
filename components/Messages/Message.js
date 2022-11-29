@@ -28,7 +28,7 @@ const Message = ({ messageId, senderId, receiverId, time, isLeft, message, onSwi
 	const setReadMessages = () => {
 			CometChat.markAsRead(messageId, receiverId, 'user', senderId).then(
 				() => {
-					console.log("mark as read success. ")
+					//console.log("mark as read success. ")
 				}, error => {
 					console.log("An error occurred when marking the message as read.", error)
 				}
@@ -64,7 +64,6 @@ const Message = ({ messageId, senderId, receiverId, time, isLeft, message, onSwi
 
 
 	const ShowDelivereadAndRead = () => {
-		//console.log(deliveredAt, readAt)
 		if (readAt !== undefined) {
 			return (
 				<View style={tw`flex w-5 h-5 flex-row justify-end items-end ml-2`}>

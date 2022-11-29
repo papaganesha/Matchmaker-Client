@@ -26,7 +26,6 @@ const ChatScreen = ({ route, navigation }) => {
     }, [])
 
     const sendMessage = (msg, receiverID) => {
-        console.log(message, receiverID)
         //let receiverID = "global"
         let receiverType = CometChat.RECEIVER_TYPE.USER
         let textMessage = new CometChat.TextMessage(receiverID, msg, receiverType)
@@ -35,50 +34,10 @@ const ChatScreen = ({ route, navigation }) => {
             message => {
                 console.log("Message sent: " + message)
                 setMessage("")
-                returnAllConversation()
+                returnAllConversation() 
             }, error => {
                 console.log("Error while sent message: " + error.message)
             })
-    }
-
-    const yourReceivedMessages = async () => {
-        let UID = userInfo._id;
-        let limit = 30;
-        let latestId = await CometChat.getLastDeliveredMessageId();
-
-        var messagesRequest = new CometChat.MessagesRequestBuilder()
-            .setUID(UID)
-            .setMessageId(latestId)
-            .setLimit(limit)
-            .build();
-
-        messagesRequest.fetchNext().then(
-            messages => {
-                console.log("Your Message list fetched:", messages);
-            }, error => {
-                console.log("Your Message fetching failed with error:", error);
-            }
-        );
-    }
-
-    const matchReceivedMessages = async () => {
-        let UID = user._id;
-        let limit = 30;
-        let latestId = await CometChat.getLastDeliveredMessageId();
-
-        var messagesRequest = new CometChat.MessagesRequestBuilder()
-            .setUID(UID)
-            .setMessageId(latestId)
-            .setLimit(limit)
-            .build();
-
-        messagesRequest.fetchNext().then(
-            messages => {
-                console.log("Their Message list fetched:", messages);
-            }, error => {
-                console.log("Their Message fetching failed with error:", error);
-            }
-        );
     }
 
     const returnAllConversation = () => {
@@ -92,15 +51,11 @@ const ChatScreen = ({ route, navigation }) => {
         messagesRequest.fetchPrevious().then(
             messages => {
                 let returnMessages = []
-                console.log("Message list fetched:", messages);
                 for (let obj of messages) {
-                    //console.log("OBJ => ", obj)
                     if (obj.receiverId == user._id && obj.action !== "deleted" && obj.text) {
-                        console.log(`MY MESSAGE ${obj.text} -- TIMESTAMP ${obj.sentAt}`);
                         returnMessages.push({ sender: "yours", message: obj.text, timestamp: obj.sentAt })
                     }
                     if (obj.receiverId == userInfo._id && obj.action !== "deleted" && obj.text) {
-                        console.log(`MATCH MESSAGE ${obj.text} -- TIMESTAMP ${obj.sentAt}`);
                         returnMessages.push({ sender: "match", message: obj.text, timestamp: obj.sentAt })
                     }
                 }
@@ -164,7 +119,6 @@ const ChatScreen = ({ route, navigation }) => {
     return (
         <View style={tw`flex-1 border bg-gray-200`}>
             <TouchableOpacity className="pressable" style={tw`flex mt-8 mx-2 w-full h-15 self-center flex-row`} onPress={() => {
-                console.log("AQUI")
                 navigation.navigate("ProfileUserOnScreen", {user:user})
             }}>
 

@@ -15,8 +15,6 @@ function handleBackButtonClick() {
 const MatchAnimation = ({ route }) => {
     const navigation = useNavigation()
     const { userInfo, matchInfo } = route.params
-    console.log(userInfo)
-    console.log(matchInfo)
 
     useEffect(()=>{
         BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);

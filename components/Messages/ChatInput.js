@@ -44,7 +44,7 @@ const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConvers
 		})
 
 		const json = await res.data
-		//console.log("JSON ",json)
+
 		if(json !== true){
 			const res2 = await axios.put(`${BASE_URL}conversationInitiliazed`, {
 				matchId,
@@ -63,7 +63,6 @@ const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConvers
 	const setDeliveredMessages = (message) =>{
 		CometChat.markAsDelivered(message.id, message.receiver.uid, 'user', message.sender.uid).then(
 			() => {
-				console.log("mark as delivered success.");
 				returnAllConversation()
 			}, error => {
 				console.log("An error occurred when marking the message as delivered.", error);
@@ -80,7 +79,6 @@ const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConvers
 			CometChat.sendMessage(textMessage).then(
 				message => {
 					changeConversationInitiated(receiverID)
-					//setDeliveredMessages(message)
 					setMessage("")
 					returnAllConversation()	
 				}, error => {
@@ -138,7 +136,7 @@ const ChatInput = ({ reply, closeReply, isLeft, username, user, returnAllConvers
 				>
 					<Icon
 						name={"send"}
-						size={23}
+						size={22}
 						color={"white"}
 					/>
 				</TouchableOpacity>
@@ -176,9 +174,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		flexDirection: "row",
 		paddingVertical: 10,
-		borderWidth:2,
+		borderTopWidth:2,
 		borderColor:"#DC2626",
-		borderRadius: 7,
 	},
 	inputAndMicrophone: {
 		flexDirection: "row",

@@ -16,7 +16,6 @@ export default FirstScreen = ({navigation}) => {
                 <TouchableOpacity 
                 style={tw`flex w-12/12 h-11 bg-red-600 justify-center items-center rounded-xl mt-4 shadow-lg`}
                     onPress={() => {
-                        console.log("Criar conta clicado")
                         navigation.navigate("SignUp")
                     }}
                 >
@@ -28,7 +27,6 @@ export default FirstScreen = ({navigation}) => {
                     <Text>
                         <Text>Já tem uma Conta? </Text>
                         <Text style={tw`text-red-600 hover:underline`} onPress={()=>{
-                            console.log("Entrar Clicado")
                             navigation.navigate("SignIn")
                         }}>Entrar</Text>
                     </Text>

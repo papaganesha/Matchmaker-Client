@@ -24,7 +24,6 @@ const SignUpOrientation = () => {
 
   const updateOrientation = async () => {
     setLoading(true)
-    console.log(option)
     let orientation
     if (option) {
       if (option == "Heterosexual") {

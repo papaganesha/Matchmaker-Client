@@ -41,6 +41,9 @@ const Matchs = () => {
             }
         })
         const json = await res.data.data
+        console.log("1",json.noMessaged)
+        console.log("2",json.alreadyMessaged)
+
         setLoading(false)
         return json
 
@@ -228,9 +231,7 @@ const ItemBottom = ({ item }) => {
 
         await messagesUnread.fetchPrevious().then(
             messages => {
-                //console.log("Message list fetched:", messages[0]);
                 messages.map(message => {
-                    //console.log(message.sender.uid, UID)
                     if (message.sender.uid == UID) {
                         unreadMessages.push(message.text)
                     }
@@ -258,10 +259,8 @@ const ItemBottom = ({ item }) => {
                 //console.log("Message fetch",messages)
                 if (messages.length > 0) {
                     if (messages[messages.length - 1].sender.uid !== UID) {
-                        console.log("AA",messages[messages.length - 1].text)
                         data = { text: `Você disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe }
                     } else {
-                        console.log("AA",messages[messages.length - 1].text)
                         data = { text: `${messages[messages.length - 1].sender.name} disse ${messages[messages.length - 1].text}`, time: convertStringToDate(messages[messages.length - 1].sentAt), hasBlockedMe: messages[messages.length - 1].hasBlockedMe }
                     }
                 }

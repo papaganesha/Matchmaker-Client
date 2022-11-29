@@ -40,7 +40,6 @@ export default SignUpGender = () => {
       if (option == "Transexual Mulher") {
         gender = 3
       }
-      console.log(gender)
   
       axios.put(`${BASE_URL}user`, {
         gender
@@ -55,7 +54,6 @@ export default SignUpGender = () => {
         //
       })
         .catch(err => {
-          //console.log("UPDATE USER GENDER ERROR: ", JSON.stringify(err.response.data.error))
           setError(err.response.data.error)
         })
     }else{
