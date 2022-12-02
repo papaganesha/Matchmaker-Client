@@ -13,16 +13,15 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [userToken, setUserToken] = useState(null)
   const [userInfo, setUserInfo] = useState(null)
-  const loadingStateRef = useRef(isLoading);
   const [error, setError] = useState("")
 
 
 
   const login = (email, password) => {
-    
-    console.log("LOADING FIRST IS",loginLoading.current)
+    setError("")
+    console.log("LOADING FIRST IS", loginLoading.current)
     loginLoading.current = true
-    console.log("LOADING TRUE ",loginLoading.current)
+    console.log("LOADING TRUE ", loginLoading.current)
 
     if (email && password) {
       axios.post(`${BASE_URL}signin`, {
@@ -41,26 +40,19 @@ export const AuthProvider = ({ children }) => {
 
         })
         .catch(err => {
-          console.log(err.code)
-            loginLoading.current = false
-            console.log("LOADING FALSE ",loginLoading.current)
-            setError(err.response.data.error)
-            console.log("LOGIN ERROR ",error)
+          loginLoading.current = false
+          console.log("LOADING FALSE ", loginLoading.current)
+          setError(err.response.data.error)
+          //console.log("LOGIN ERROR ",error.response.data.error)
         })
-        
-  
-        
     } else {
       setTimeout(()=>{
         loginLoading.current = false
-        console.log("LOADING FALSE",loginLoading.current)
+        console.log("LOADING FALSE", loginLoading.current)
         setError("Todos campos devem ser preenchidos")
-
-      },2000)
-    }
-    
-
+      },1500)
   }
+}
 
   function getAge(dateString) {
     var today = new Date();
@@ -75,9 +67,10 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, password, confirmPass, birthDate) => {
     setError("")
+    console.log("LOADING FIRST IS", registerLoading.current)
     registerLoading.current = true
-    console.log("true'",registerLoading.current)
- 
+    console.log("LOADING TRUE ", registerLoading.current)
+
     if (email && password && confirmPass && birthDate) {
       let userAge = getAge(birthDate)
       if (userAge >= 18) {
@@ -90,30 +83,34 @@ export const AuthProvider = ({ children }) => {
             birthDate
           })
             .then(res => {
-              if(res.data.success) {
+              if (res.data.success) {
                 login(email, password)
               }
             })
             .catch(err => {
-              console.log("REGISTER ERROR ",error)
-              setError(err.response.data.error)
+
+              setTimeout(() => {
+                registerLoading.current = false
+                console.log("REGISTER ERROR ", error)
+                setError(err.response.data.error)
+              }, 2000)
             })
 
         }
       } else {
-        setTimeout(()=>{
+        setTimeout(() => {
           registerLoading.current = false
-          console.log("LOADING FALSE",registerLoading.current)
+          console.log("LOADING FALSE", registerLoading.current)
           setError("Você deve ter 18 anos para poder se cadastrar")
-  
-        },2000)
+
+        }, 2000)
       }
     } else {
-      setTimeout(()=>{
+      setTimeout(() => {
         registerLoading.current = false
-        console.log("LOADING FALSE",registerLoading.current)
+        console.log("LOADING FALSE", registerLoading.current)
         setError("Preencha todos os campos")
-      },2000)
+      }, 2000)
 
     }
 
@@ -146,7 +143,7 @@ export const AuthProvider = ({ children }) => {
       console.log(`isLoggedIn error ${e}`)
       setError(e)
     }
-  
+
     setIsLoading(false)
   }
 
@@ -163,7 +160,7 @@ export const AuthProvider = ({ children }) => {
         }
       })
       .catch(err => {
-        console.log("REFRES ERROR ",error)
+        console.log("REFRES ERROR ", error)
         setError(err.response.data.error)
       })
 
@@ -178,7 +175,7 @@ export const AuthProvider = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{ login, logout, loginLoading, registerLoading, isLoggedIn, isLoading, setIsLoading, userToken, userInfo, error, register, refreshUserInfo, setError}}>
+    <AuthContext.Provider value={{ login, logout, loginLoading, registerLoading, isLoggedIn, isLoading, setIsLoading, userToken, userInfo, error, register, refreshUserInfo, setError }}>
       {children}
     </AuthContext.Provider>
   )

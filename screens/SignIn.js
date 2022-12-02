@@ -32,18 +32,18 @@ const SignIn = () => {
   },[])
 
 
-  // useEffect(()=>{
-  //   console.log("yaep ", loginLoading.current)
-  // },[loginLoading.current])
+  useEffect(()=>{
+    console.log("yaep ", loginLoading.current)
+  },[loginLoading.current])
 
 
 
 
   const RenderButton = () => {
     console.log("IN SIGNIN ",loginLoading.current)
-    if(loginLoading.current){
+    if(loginLoading.current == true){
       return(
-        <ActivityIndicator size={15} color="#FFF" />
+        <ActivityIndicator size={20} color="#FFF" />
       )
     }else{
       return(

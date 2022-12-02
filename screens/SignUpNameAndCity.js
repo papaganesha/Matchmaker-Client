@@ -43,6 +43,7 @@ const SignUpNameAndCity = ({ navigation }) => {
 
 
   const updateProfileDetails = async () => {
+    setError("")
     setLoading(true)
 
     if (fName && sName && city && summary) {
@@ -57,6 +58,7 @@ const SignUpNameAndCity = ({ navigation }) => {
           'Authorization': `${userToken}`
         }
       }).then(res => {
+        console.log(res)
         if (res.data.success) {
           navigation.navigate("SignUpGender")
         }
@@ -149,20 +151,6 @@ const SignUpNameAndCity = ({ navigation }) => {
           </Text>
         )}
       </View>
-
-      <View
-      style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-lg mt-10 self-center shadow-lg`}
-      onStartShouldSetResponder={() => {
-          navigation.navigate("SignUpGender")        
-        }}
-      >
-          <Text style={tw`text-white text-base font-semibold`}>
-            Skip
-          </Text>
-   
-      </View>
-
-      
     </View>
   )
 }

@@ -18,28 +18,27 @@ const AppNav = () => {
                 <ActivityIndicator size={30} />
             </View>
         )
-    } else {
-        if (userToken && userInfo.firstLogin) {
-            return (
-                <NavigationContainer>
-                    <RegisterStack />
-                </NavigationContainer>
-            )
-        }
-        else if (userToken && !userInfo.firstLogin) {
-            return (
-                <NavigationContainer>
-                    <AppStack />
-                </NavigationContainer>
-            )
-        } else {
-            return (
-                <NavigationContainer>
-                    <AuthStack />
-                </NavigationContainer>
-            )
-        }
+    } else if (userToken && userInfo.firstLogin) {
+        return (
+            <NavigationContainer>
+                <RegisterStack />
+            </NavigationContainer>
+        )
     }
+    else if (userToken && !userInfo.firstLogin) {
+        return (
+            <NavigationContainer>
+                <AppStack />
+            </NavigationContainer>
+        )
+    } else {
+        return (
+            <NavigationContainer>
+                <AuthStack />
+            </NavigationContainer>
+        )
+    }
+
 
 }
 

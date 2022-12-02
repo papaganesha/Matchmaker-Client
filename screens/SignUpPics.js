@@ -138,18 +138,6 @@ export default function SignUpPics({ navigation }) {
                     Continuar
                 </Text>
             </View>
-
-            <View
-            style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-lg self-center shadow-lg`}
-            onStartShouldSetResponder={() => {
-                navigation.navigate("SignUpInterests")
-            }}
-        >
-            <Text style={tw`text-white text-base font-semibold`}>
-                Skip
-            </Text>
-
-        </View>
         </View>
     )
 }

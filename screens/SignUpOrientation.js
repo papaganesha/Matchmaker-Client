@@ -91,21 +91,6 @@ const SignUpOrientation = () => {
           </Text>
         )}
       </View>
-
-      <View
-      style={tw`flex w-10/12 h-11 bg-red-600 justify-center items-center rounded-lg mt-10 self-center shadow-lg`}
-      onStartShouldSetResponder={() => {
-          navigation.navigate("SignUpPics")        
-        }}
-      >
-          <Text style={tw`text-white text-base font-semibold`}>
-            Skip
-          </Text>
-   
-      </View>
-
-      
-
     </View>
   )
 }
